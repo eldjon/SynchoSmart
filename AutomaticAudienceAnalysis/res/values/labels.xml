@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+   <string name="lbl_start">Start</string> 
+   <string name="lbl_stop">Stop</string> 
+   
+   <!--     Labels related to data files columns & titles      -->
+   <string name="lbl_date_time"> Sample date and time</string>
+   <string name="lbl_coordinate_x"> Coordinate X</string>
+   <string name="lbl_coordinate_y"> Coordinate Y</string>
+   <string name="lbl_coordinate_z"> Coordinate Z</string>
+   <string name="lbl_azimuth"> Azimuth</string>
+   <string name="lbl_roll"> Roll</string>
+   <string name="lbl_pitch"> Pitch</string>
+   <string name="lbl_distance"> Distance in cm</string>
+   <string name="lbl_sound_level"> Sound level (db) </string>
+   <string name="lbl_acceleration_x"> Acceleration on X (m/s^2) </string>
+   <string name="lbl_acceleration_y"> Acceleration on Y (m/s^2) </string>
+   <string name="lbl_acceleration_z"> Acceleration on Z (m/s^2) </string>
+   <string name="lbl_magnetic_x"> Magnetic field on X (uT-micro tesla) </string>
+   <string name="lbl_magnetic_y"> Magnetic field on Y (uT-micro tesla) </string>
+   <string name="lbl_magnetic_z"> Magnetic field on Z (uT-micro tesla) </string>
+   <string name="lbl_gyro_x"> Angular speed on X (r/s) </string>
+   <string name="lbl_gyro_y"> Angular speed on Y (r/s) </string>
+   <string name="lbl_gyro_z"> Angular speed on Z (r/s) </string>
+   <string name="lbl_pressure"> Pressure (hPa - millibar) </string>
+   <string name="lbl_proximity"> Distance (cm) </string>
+   <string name="lbl_gravity_x"> Gravity on X (m/s^2) </string>
+   <string name="lbl_gravity_y"> Gravity on Y (m/s^2) </string>
+   <string name="lbl_gravity_z"> Gravity on Z (m/s^2) </string>
+   <string name="lbl_rotation_vector_x"> Rotation on X </string>
+   <string name="lbl_rotation_vector_y"> Rotation on Y </string>
+   <string name="lbl_rotation_vector_z"> Rotation on Z </string>
+   <string name="lbl_rotation_vector_cos"> Cos(θ/2)  </string>
+   <string name="lbl_rotation_vector_accuracy"> Estimated accuracy </string>
+   <string name="lbl_temperature"> Temperature (degree celcius) </string>
+   
+   <!--               Labels related to buttons                -->
+   <string name="lbl_ok">Ok</string>
+   <string name="lbl_cancel">Cancel</string>
+   
+   <!--               Labels related to menu                   -->
+   <string name="lbl_server_ip"> Server IP</string>
+   <string name="lbl_force_stop"> Force Stop</string>
+   <string name="lbl_connect"> Connect</string>
+   <string name="lbl_reconnect"> Reconnect</string>
+   
+   <!--               Labels related to content                   -->
+   <string name="lbl_question">Question </string>
+</resources>

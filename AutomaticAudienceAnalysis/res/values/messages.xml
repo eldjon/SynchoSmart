@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msg_no_sensor_selected"> No sensor was selected. Select at least one sensor to proceed! </string>
+    <string name="msg_funf_service_error"> Error occurred in the FUNF service. Cannot continue! </string>
+    <string name="msg_data_service_error"> Error occurred in the Data service. Cannot continue! </string>
+    
+    <!--                         MESSAGES RELATED TO DIALOG                            -->
+    <string name="msg_initiating">Initiating </string>
+    <string name="msg_finalizing">Finalizing </string>
+    <string name="msg_start_store_to_file"> The service started storing data to file!!</string>
+    <string name="msg_finished_store_to_file"> The service started storing data to file!!</string>
+    <string name="msg_start_finalizing_data_to_file"> The service is saving the cached data to files!!</string>
+    <string name="msg_complete_finalizing_data_to_file"> The service completed successfully storing all cached data to files. !!</string>
+    <string name="msg_service_started_error">The service is already started once. You cannot start it twice!!</string>
+    <string name="msg_service_stoped_error">The service was already stopped!!</string>
+    <string name="msg_service_is_running">Service is currently running!!</string>
+    <string name="msg_application_started">Application initialized and started ... </string>
+    <string name="msg_binded_to_service">The activity is binded to ConnectionService!</string>
+    <string name="msg_device_cannot_connect">This device is not registered for the current survey, or the server has not been started yet!</string>
+    <string name="msg_socket_received">The connection socket from the server successfully received!</string>
+    <string name="msg_connecting">Connecting to server ...</string>
+    <string name="msg_device_connected"> Device is currently connected! </string>
+    <string name="msg_socket_number_error">Could not obtain socket number! The server is offline or the device is not included for the survey!</string>
+    <string name="msg_socket_conn_error">Network error occured! Please try to reconnect (Menu->Reconnect) !</string>
+    <string name="msg_empty_text">Please provide a correct seat number! </string>
+    <string name="msg_app_not_ready">Application is not ready! Try again in few seconds! </string>
+    <string name="msg_server_error">Server error occurred! Try again or contact administrator! </string>
+    <string name="msg_app_stop"> Do you want to stop the application? </string>
+    <string name="msg_dublicate_seat_nr"> The seat number you provided is taken. Please provide a unique seat number! </string>
+    <string name="msg_airplane_mode">Please set the airplane mode before continuing with the survey! </string>
+    <string name="msg_no_internet">The device is not connected to internet!</string>
+    <string name="msg_questionnaire_not_sent">The questionnaire could not be send to the server!</string>
+    <string name="msg_questionnaire_sent">The questionnaire was successfully sent to the server!</string>
+    <string name="msg_sending_data">Sending data!</string>
+    <string name="msg_no_answers">Please provide an asnwer to all questions!</string>
+    <string name="msg_no_questionnaire">There is no questionnaire for this Survey!</string>
+</resources>

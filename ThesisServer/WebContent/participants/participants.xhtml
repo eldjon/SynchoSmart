@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="participant List">
+					<p:dataTable var="participant" id="participantTableId"
+						value="#{participantBean.participants}" paginator="true" rows="20"
+						selection="#{participantBean.selectedParticipant}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" update=":mainForm:participantPanelId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{participant.participantId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Survey Participation"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{participant.surveyInstance.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Firstname"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{participant.firstname}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Lastname"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{participant.lastname}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Gender"></h:outputText>
+							</f:facet>
+							<c:if test="#{participant.gender}">
+								<h:outputText value="Male"></h:outputText>
+							</c:if>
+							<c:otherwise>
+								<h:outputText value="Female"></h:outputText>
+							</c:otherwise>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Device´s"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{participant.device.imei}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel
+				header="#{participantBean.selectedParticipant.firstname} #{participantBean.selectedParticipant.lastname}"
+				id="participantPanelId" widgetVar="participantPanelWidget"
+				closable="true" visible="true">
+				<h:panelGrid border="0" columns="2" style="width:100%"
+					id="participantPanelGridId">
+					<h:outputLabel value="Firstname : "></h:outputLabel>
+					<p:inputText
+						value="#{participantBean.selectedParticipant.firstname}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Lastname : "></h:outputLabel>
+					<p:inputText
+						value="#{participantBean.selectedParticipant.lastname}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Nationality : "></h:outputLabel>
+					<p:inputText
+						value="#{participantBean.selectedParticipant.nationality}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Gender : "></h:outputLabel>
+					<c:if test="#{participantBean.selectedParticipant.gender}">
+						<p:inputText value="Male" readonly="true" disabled="true"></p:inputText>
+					</c:if>
+					<c:otherwise>
+						<p:inputText value="Female" readonly="true" disabled="true"></p:inputText>
+					</c:otherwise>
+
+					<h:outputLabel value="Occupation : "></h:outputLabel>
+					<p:inputText
+						value="#{participantBean.selectedParticipant.occupation}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Date of birth : "></h:outputLabel>
+					<p:calendar
+						value="#{participantBean.selectedParticipant.dateOfBirth}"
+						pattern="MM/dd/yyyy HH:mm" readonly="true" disabled="true">
+					</p:calendar>
+
+					<h:outputLabel value="Occupied Seat : "></h:outputLabel>
+					<p:inputText
+						value="#{participantBean.selectedParticipant.seatNumber}"
+						readonly="true" disabled="true"></p:inputText>
+				</h:panelGrid>
+
+				<h:panelGrid border="0" columns="11"
+					rendered="#{participantBean.selectedParticipant.participantId != null and participantBean.selectedParticipant.participantId > 0}">
+					<p:commandLink title="Update the selected participant"
+						oncomplete="PF('updateParticipantDialogWidget').show()"
+						process="@this"
+						update=":mainForm:updateParticipantPanelId :mainForm:messages">
+						<p:graphicImage value="/large_icons/update.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink title="Delete the selected participant"
+						process="@this"
+						oncomplete="PF('deleteParticipantDialogWidget').show()"
+						update=":mainForm:messages :mainForm:deleteparticipantPanelId">
+						<p:graphicImage value="/large_icons/delete.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+
+
+			<!-- UPDATE PARTICIPANT SECTION -->
+			<p:dialog closable="true" draggable="true" resizable="false"
+				widgetVar="updateParticipantDialogWidget" dynamic="true"
+				id="updateParticipantDialogId"
+				header="#{participantBean.selectedParticipant.firstname} #{participantBean.selectedParticipant.lastname}">
+				<p:panel style="min-width:600px" id="updateParticipantPanelId"
+					toggleable="true" closable="false">
+					<h:panelGrid border="0" columns="2" style="width:100%"
+						id="updateParticipantPanelGridId">
+						<h:outputLabel value="Firstname : "></h:outputLabel>
+						<p:inputText
+							value="#{participantBean.selectedParticipant.firstname}"></p:inputText>
+
+						<h:outputLabel value="Lastname : "></h:outputLabel>
+						<p:inputText
+							value="#{participantBean.selectedParticipant.lastname}"></p:inputText>
+
+						<h:outputLabel value="Nationality : "></h:outputLabel>
+						<p:inputText
+							value="#{participantBean.selectedParticipant.nationality}"></p:inputText>
+
+						<h:outputLabel value="Gender : "></h:outputLabel>
+						<p:selectOneButton value="#{participantBean.selectedParticipant.gender}">
+							<f:selectItem itemLabel="Male" itemValue="true"/>
+							<f:selectItem itemLabel="Female" itemValue="false"/>
+						</p:selectOneButton>
+
+						<h:outputLabel value="Occupation : "></h:outputLabel>
+						<p:inputText
+							value="#{participantBean.selectedParticipant.occupation}"></p:inputText>
+
+						<h:outputLabel value="Date of birth : "></h:outputLabel>
+						<p:calendar 
+							value="#{participantBean.selectedParticipant.dateOfBirth}"
+							pattern="MM/dd/yyyy HH:mm">
+						</p:calendar>
+
+						<h:outputLabel value="Occupied Seat : "></h:outputLabel>
+						<p:inputText
+							value="#{participantBean.selectedParticipant.seatNumber}"></p:inputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Update"
+							update="messages updateParticipantPanelId participantPanelId :mainForm:accordionPanelId:participantTableId"
+							process="updateParticipantPanelId"
+							oncomplete="PF('updateParticipantDialogWidget').hide()"
+							actionListener="#{participantBean.update}">
+							<p:graphicImage value="/large_icons/update.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel" immediate="true"
+							update="updateParticipantPanelId messages" process="@this"
+							onclick="PF('updateParticipantDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+			<!-- DELETE PARTICIPANT SECTION -->
+			<p:dialog id="deleteParticipantDialogId" resizable="false"
+				widgetVar="deleteParticipantDialogWidget" closable="true"
+				maximizable="true" dynamic="true" draggable="true"
+				header="#{participantBean.selectedParticipant.firstname} #{participantBean.selectedParticipant.lastname}">
+				<p:panel style="min-width:600px"
+					header="#{participantBean.selectedParticipant.firstname} #{participantBean.selectedParticipant.lastname}"
+					closable="true"
+					toggleable="true" id="deleteParticipantPanelId"
+					widgetVar="deleteParticipantPanelWidget" visible="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputText
+							value="Do you want to remove the selected participant ? "></h:outputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Yes"
+							update="accordionPanelId participantPanelId messages"
+							oncomplete="PF('deleteParticipantDialogWidget').hide()"
+							process="@this" actionListener="#{participantBean.delete}">
+							<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel" immediate="true" update="messages"
+							onclick="PF('deleteParticipantDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Emek Boru</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" autoHeight="false"
+				style="padding:0px" id="accordionPanelId">
+				<p:tab title="#{language.Customer}">
+					<p:dataTable var="company" id="companyListDataTableId"
+						widgetVar="companyListDataTableWidget"
+						emptyMessage="#{language.EmptyMessage}"
+						rowKey="#{company.customerId}" dblClickSelect="true"
+						value="#{customerListBean.customers}" paginator="true" rows="20"
+						selection="#{customerBean.currentCustomer}" selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" update="viewCompanyPanelId"
+							oncomplete="viewCompanyDialogWidget.show()"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Name}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.BusinessId}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.businessId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Type}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.businessType}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Website}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.website}"></h:outputText>
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="#{language.Load}"
+								process="companyListDataTableId" update="companyListDataTableId"
+								onclick="viewCompanyDialogWidget.hide()"
+								actionListener="#{customerListBean.loadCustomers}">
+							</p:commandButton>
+						</f:facet>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="#{language.New} #{language.customer}"
+				id="newCompanyPanelId" widgetVar="newCompanyPanelWidget"
+				visible="true">
+				<h:panelGrid border="0" columns="2" style="width:100%"
+					id="newCompanyPanelGridId">
+					<h:outputLabel value="#{language.Name} *: "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.name}"
+						maxlength="50" required="true"
+						requiredMessage="#{language.RequiredMessage}"></p:inputText>
+
+					<h:outputLabel value="#{language.BusinessId} *: "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.businessId}"
+						converterMessage="#{language.nbLayersConverterError}"
+						required="true" requiredMessage="#{language.RequiredMessage}"></p:inputText>
+
+					<h:outputLabel value="#{language.BusinessType} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.businessType}"
+						maxlength="64"></p:inputText>
+
+					<h:outputLabel value="#{language.TypeOfBusiness} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.businessType}"
+						maxlength="20"></p:inputText>
+
+					<h:outputLabel value="#{language.Address}:  " />
+					<p:inputTextarea value="#{customerBean.newCustomer.address}"
+						rows="5" maxLength="150" style="width:125px" autoResize="false"
+						cols="10" maxHeight="10"></p:inputTextarea>
+
+					<h:outputLabel value="#{language.City} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.city}"
+						maxlength="20" required="true"
+						requiredMessage="#{lanugage.RequiredMessage}"></p:inputText>
+
+					<h:outputLabel value="#{language.Country} : "></h:outputLabel>
+					<p:selectOneMenu layout="lineDirection" style="width: 140px"
+						value="#{customerBean.newCustomer.country.countryCode}"
+						required="true" requiredMessage="#{language.RequiredMessage}">
+						<c:forEach items="#{countryListViewBean.countryList}"
+							var="country">
+							<f:selectItem itemValue="#{country.countryCode}"
+								itemLabel="#{country.name}"></f:selectItem>
+						</c:forEach>
+					</p:selectOneMenu>
+
+					<h:outputLabel value="#{language.PostalCode} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.postalCode}"
+						maxlength="5"></p:inputText>
+
+					<h:outputLabel value="#{language.PhoneNumber} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.phoneNumber}"
+						maxlength="20"></p:inputText>
+
+					<h:outputLabel value="#{language.FaxNumber} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.faxNumber}"
+						maxlength="20"></p:inputText>
+
+					<h:outputLabel value="#{language.eMail} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.eMail}"
+						maxlength="20"></p:inputText>
+
+					<h:outputLabel value="#{language.Website} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.newCustomer.website}"
+						maxlength="30"></p:inputText>
+
+					<h:outputLabel value="#{language.PartnerSince} (mm/dd/yyyy): "></h:outputLabel>
+					<p:calendar mode="popup" showOn="button" autocomplete="false"
+						pattern="#{userCredentialsBean.dateFormat}"
+						value="#{customerBean.newCustomer.partnersSince}"></p:calendar>
+				</h:panelGrid>
+
+				<h:panelGrid border="0" columns="3">
+					<p:commandLink title="#{language.Add}"
+						update="newCompanyPanelId newCompanyMessages"
+						process="@this newCompanyPanelId"
+						actionListener="#{customerBean.addCompany}">
+						<p:graphicImage value="/large_icons/add.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink title="#{language.Cancel}" immediate="true"
+						process="@this" 
+						update="newCompanyMessages newCompanyPanelGridId">
+						<p:graphicImage value="/large_icons/cancel.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+
+			<!-- VIEW CUSTOMER SECTION -->
+			<p:dialog draggable="true" closable="true" maximizable="true"
+				resizable="false" header="#{language.Details}"
+				id="viewCompanyDialogId" widgetVar="viewCompanyDialogWidget">
+				<p:panel style="min-width:600px" id="viewCompanyPanelId"
+					header="#{customerBean.currentCustomer.name}" toggleable="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputLabel value="#{language.Name} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.name}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.BusinessId} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.businessId}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.BusinessType} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.businessType}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.Address} : "></h:outputLabel>
+						<p:inputTextarea value="#{customerBean.currentCustomer.address}"
+							rows="5" autoResize="false" readonly="true" style="width:125px"></p:inputTextarea>
+
+						<h:outputLabel value="#{language.City} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.city}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.Country} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.country.name}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.PostalCode} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.postalCode}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.PhoneNumber} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.phoneNumber}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.FaxNumber} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.faxNumber}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.eMail} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.eMail}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.Website} : "></h:outputLabel>
+						<p:inputText value="#{customerBean.currentCustomer.website}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="#{language.PartnerSince} (mm/dd/yyyy):"></h:outputLabel>
+						<p:calendar mode="popup" showOn="button" autocomplete="false"
+							pattern="#{userCredentialsBean.dateFormat}" disabled="true"
+							value="#{customerBean.currentCustomer.partnersSince}"></p:calendar>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="#{language.Cancel}" immediate="true"
+							onclick="viewCompanyDialogWidget.hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+			<p:messages id="newCompanyMessages"></p:messages>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

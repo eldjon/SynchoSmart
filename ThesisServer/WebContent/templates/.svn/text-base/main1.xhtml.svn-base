@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Emek Boru</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+	<link type="text/css" rel="stylesheet" href="styles/style.css"
+		charset="UTF-8" />
+</h:head>
+
+<h:body>
+	<f:view locale="#{languageSelector.locale}" encoding="UTF-8">
+		<h:form id="mainForm" prependId="false" enctype="multipart/form-data"
+			rendered="#{userCredentialsBean.user.username != null}">
+			<p:toolbar
+				style="top:10px; width:1250px; margin-left:auto; margin-right:auto; position:relative">
+				<p:toolbarGroup align="left">
+					<p:commandButton value="#{language.Logout}" process="@this"
+						actionListener="#{userCredentialsBean.logout}"></p:commandButton>
+					<p:commandButton value="#{language.Profile}" process="@this"
+						actionListener="#{userCredentialsBean.goToMainPage}"></p:commandButton>
+					<p:inputText value="#{userCredentialsBean.user.employee.firstname}"
+						disabled="true"></p:inputText>
+					<p:inputText value="#{userCredentialsBean.user.employee.lastname}"
+						disabled="true"></p:inputText>
+					<p:inputText
+						value="#{userCredentialsBean.user.employee.department.name}  
+						         #{userCredentialsBean.user.userType.generalPrivileges[0].employeeP}"
+						disabled="true"></p:inputText>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Close" update="mainForm" process="@this"
+						actionListener="#{userCredentialsBean.close}"></p:commandButton>
+					<p:commandButton value="English" update="mainForm" process="@this"
+						actionListener="#{languageSelector.setEnglishLanguage}"></p:commandButton>
+					<p:commandButton value="Türkçe" update="mainForm" process="@this"
+						actionListener="#{languageSelector.setTurkishLanguage}"></p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:menubar
+				style="top:10px; width:1248px; margin-left:auto; margin-right:auto; position:relative">
+				<p:submenu label="#{language.Employee}"
+					rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].employeeP >= 2}">
+					<p:menuitem value="#{language.New}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].employeeP >= 3}"
+						actionListener="#{employeeListBean.goToNewEmployeePage}"></p:menuitem>
+					<p:menuitem value="#{language.Manage}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].employeeP >= 2}"
+						actionListener="#{employeeListBean.goToEmployeeManagePage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.User}"
+					rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].userP >= 2}">
+					<p:menuitem value="#{language.New}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].employeeP >= 3}"
+						actionListener="#{userListBean.goToNewUserPage}"></p:menuitem>
+					<p:menuitem value="#{language.ManageUsers}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].employeeP >= 2}"
+						actionListener="#{userListBean.goToUserManagePage}"></p:menuitem>
+					<p:submenu label="#{language.UserType}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].userP >= 5}">
+						<p:menuitem value="#{language.New}" process="@this"
+							actionListener="#{userListBean.goToNewUserTypePage}"></p:menuitem>
+						<p:menuitem value="#{language.ManageUserType}" process="@this"
+							actionListener="#{userListBean.goToManageUserTypePage}"></p:menuitem>
+					</p:submenu>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Department}"
+					rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].departmentP >= 2}">
+					<p:menuitem value="#{language.New}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].departmentP >= 3}"
+						actionListener="#{departmentListBean.goToNewDepartmentPage}"></p:menuitem>
+					<p:menuitem value="#{language.ManageDepartments}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].departmentP >= 4}"
+						actionListener="#{departmentListBean.goToDepartmentManagePage}"></p:menuitem>
+				</p:submenu>
+			
+				<p:submenu label="#{language.Customer}"
+					rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].companyP >= 2}">
+					<p:menuitem
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].companyP >= 3}"
+						value="#{language.New}" process="@this"
+						actionListener="#{customerListBean.goToNewCustomerPage}"></p:menuitem>
+					<p:menuitem
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].companyP >= 2}"
+						value="#{language.ManageCustomers}" process="@this"
+						actionListener="#{customerListBean.goToManageCustomerPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.License}">
+					<p:menuitem value="#{language.MyLicenses}" process="@this"
+						actionListener="#{myLicenses.goToMyLicensesPage}"></p:menuitem>
+					<p:menuitem value="#{language.PlanLicenses}" process="@this"
+						actionListener="#{licenses.goToPlanLicensesPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.CRM}">
+					<p:menuitem value="#{language.MyCustomers}" process="@this"
+						actionListener="#{myCustomerList.goToMyCustomersPage}"></p:menuitem>
+					<p:menuitem value="#{language.MyEvents}" process="@this"
+						actionListener="#{events.goToMyEventsPage}"></p:menuitem>
+					<p:menuitem value="#{language.CMplanning}" process="@this"
+						actionListener="#{activeEmployeeList.goToCmPlanningPage}"></p:menuitem>
+					<p:menuitem value="#{language.EventPlanning}" process="@this"
+						actionListener="#{events.goToPlanEventsPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Tender}" rendered="false">
+					<p:menuitem value="#{language.NewTender}" process="@this"
+						actionListener="#{tenderCustomers.goToNewTenderPage}"></p:menuitem>
+					<p:menuitem value="#{language.ManageTenders}" process="@this"
+						actionListener="#{tenderCustomers.goToManageTenderPage}"></p:menuitem>
+					<p:menuitem value="#{language.Statistics}" process="@this"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Order}"
+					rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].orderP >= 2}">
+					<p:menuitem value="#{language.New}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].orderP >= 3}"
+						actionListener="#{customerListBean.goToNewOrderPage}"></p:menuitem>
+					<p:menuitem value="#{language.ManageOrders}" process="@this"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].orderP >= 2}"
+						actionListener="#{customerListBean.goToManageOrderPage}"></p:menuitem>
+					<p:menuitem value="#{language.QualitySpec}" process="@this"
+						actionListener="#{orderListBean.goToQualitySpecPage}"></p:menuitem>
+					<p:menuitem value="#{language.CoatQualitySpec}" process="@this"
+						actionListener="#{orderListBean.goToCoatQualitySpecPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Machine}"
+					rendered="false">
+					<p:menuitem value="#{language.New}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].orderP >= 3}"
+						actionListener="#{machineListBean.goToNewMachinePage}"
+						process="@this"></p:menuitem>
+					<p:menuitem value="#{language.SpiralMachine}" process="@this"
+						rendered="#{(userCredentialsBean.user.userType.generalPrivileges[0].machineP == 6 ) 
+						or (userCredentialsBean.user.userType.generalPrivileges[0].machineP >= 20)}"
+						actionListener="#{machineListBean.goToSpiralMachinePage}"></p:menuitem>
+					<p:menuitem value="#{language.ProductionMachine}" process="@this"
+						rendered="#{(userCredentialsBean.user.userType.generalPrivileges[0].machineP == 6 )
+						 or (userCredentialsBean.user.userType.generalPrivileges[0].machineP >= 20)}"
+						actionListener="#{machineListBean.goToProductionMachinePage}"></p:menuitem>
+					<p:menuitem value="#{language.CoatMachine}" process="@this"
+						rendered="#{(userCredentialsBean.user.userType.generalPrivileges[0].machineP == 7 ) 
+						or (userCredentialsBean.user.userType.generalPrivileges[0].machineP >= 20)}"
+						actionListener="#{machineListBean.goToCoatMachinePage}"></p:menuitem>
+					<p:menuitem value="#{language.MachineMaintenance}" process="@this"
+						rendered="#{(userCredentialsBean.user.userType.generalPrivileges[0].machineP == 7 ) 
+						or (userCredentialsBean.user.userType.generalPrivileges[0].machineP >= 20)}"
+						actionListener="#{machineListBean.goToMachineMaintencePage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.ManMaterials}">
+					<p:menuitem value="#{language.Coil}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].manufacturingMaterialP >= 2}"
+						actionListener="#{coilListBean.goToCoilPage}" process="@this"></p:menuitem>
+					<p:menuitem value="#{language.Dust}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].manufacturingMaterialP >= 2}"
+						actionListener="#{dustListBean.goToDustPage}" process="@this"></p:menuitem>
+					<p:menuitem value="#{language.Electrode}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].manufacturingMaterialP >= 2}"
+						actionListener="#{electrodeListBean.goToElectrodePage}"
+						process="@this"></p:menuitem>
+					<p:menuitem value="#{language.Wire}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].manufacturingMaterialP >= 2}"
+						actionListener="#{wireListBean.goToWirePage}" process="@this"></p:menuitem>
+					<p:menuitem value="#{language.Salt}" rendered="false"
+						actionListener="#{saltListBean.goToSaltPage}" process="@this"></p:menuitem>
+					<p:menuitem value="#{language.CoatMaterials}"
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].coatMaterialP >= 2}"
+						actionListener="#{coatingMaterialBean.goToCoatingMaterialPage}"
+						process="@this"></p:menuitem>
+				</p:submenu>
+
+				<p:submenu label="#{language.OtherMaterials}" rendered="false">
+					<p:menuitem value="#{language.CategoriesOther}"
+						actionListener="#{materialCategoryBean.goToMaterialCategory}"
+						process="@this"></p:menuitem>
+					<p:menuitem value="#{language.Consumable}"
+						actionListener="#{consumableMaterialsBean.goToConsumableMaterials}"
+						process="@this"></p:menuitem>
+					<p:menuitem value="#{language.NotConsumable}"
+						actionListener="#{notConsumableMaterialsBean.goToNotConsumableMaterials}"
+						process="@this"></p:menuitem>
+
+				</p:submenu>
+
+				<p:submenu label="#{language.Pipe}" rendered="false">
+					<p:menuitem value="#{language.ProductionTests}" process="@this"
+						actionListener="#{companyListBean.goToProductionTestsPage}"></p:menuitem>
+					<p:menuitem value="#{language.CoatTests}" process="@this"
+						actionListener="#{companyListBean.goToCoatTestsPage}"></p:menuitem>
+					<p:menuitem value="#{language.LotView}" process="@this"
+						actionListener="#{companyListBean.goToLotViewPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Report}" rendered="false">
+					<p:menuitem value="#{language.ProductionReport}" process="@this"
+						actionListener="#{machineListBean.goToProductionReport}"></p:menuitem>
+					<p:menuitem value="#{language.StockReport}" process="@this"
+						actionListener="#{coatTypeListBean.goToStockReportPage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="#{language.Help}" rendered="false" >
+					<p:menuitem value="#{language.EventTypes}" process="@this"
+						actionListener="#{eventTypes.goToEventTypesPage}"></p:menuitem>
+				</p:submenu>
+
+				<p:submenu label="#{language.Utils}">
+					<p:menuitem value="#{language.CRM}"
+						actionListener="#{navigation.goToCrmUtils}" process="@this"></p:menuitem>
+					<p:menuitem value="#{language.ManageMachineMaintenanceUtils}"
+						process="@this"
+						actionListener="#{machineUtilsListBean.goToMachineUtils}"></p:menuitem>
+					<p:menuitem value="#{language.Maintenance}" process="@this"></p:menuitem>
+				</p:submenu>
+
+			</p:menubar>
+
+			<p:layout fullPage="false" id="mainLayout"
+				style="top:10px; bottom:20px; width:1254px; margin:0; height:1300px; margin-left:auto; margin-right:auto; position:relative">
+				<p:layoutUnit position="west" resizable="true" collapsible="true"
+					maxSize="600" minSize="400" closable="false">
+					<ui:insert name="sideMenu"></ui:insert>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center" resizable="true" collapsible="true">
+					<ui:insert name="showPanel"></ui:insert>
+				</p:layoutUnit>
+				<p:messages showDetail="false" showSummary="true" id="messages"></p:messages>
+			</p:layout>
+		</h:form>
+	</f:view>
+</h:body>
+</html>

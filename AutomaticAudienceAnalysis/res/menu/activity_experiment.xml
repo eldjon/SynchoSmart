@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/server_ip"
+        android:title="@string/lbl_server_ip"/>
+    <item android:id="@+id/force_stop" android:title="@string/lbl_force_stop"></item>
+    <item android:id="@+id/reconnect" android:title="@string/lbl_reconnect"></item>
+
+</menu>

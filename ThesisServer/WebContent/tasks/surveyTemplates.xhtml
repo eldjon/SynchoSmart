@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="Survey Template´s List">
+					<p:dataTable var="template" id="templateTableId"
+						value="#{surveyTemplateBean.templateList}" paginator="true"
+						rows="20" selection="#{surveyTemplateBean.selected}"
+						selectionMode="single" resizableColumns="true"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" update="templateTableId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.surveyTemplateId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Name"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Description"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.description}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Creation Date"></h:outputText>
+							</f:facet>
+							<p:calendar readonly="true" value="#{template.creationDate}"></p:calendar>
+						</p:column>
+
+						<f:facet name="footer">
+							<p:panelGrid columns="2" border="0"
+										style="border:0px; border-style:none" 
+										rendered="#{surveyTemplateBean.selected.surveyTemplateId > 0}">
+								<p:commandLink process="@this" style="border-style:none"
+									title="Delete the selected survey template"
+									oncomplete="PF('deleteSurveyDialogWidget').show()"
+									update=":mainForm:messages">
+									<p:graphicImage value="/large_icons/delete.png"
+										style="border:0px"></p:graphicImage>
+								</p:commandLink>
+								<p:commandLink process="@this"
+									oncomplete="PF('updateTemplateDialogWidget').show()"
+									update=":mainForm:messages :mainForm:deleteSurveyPanelId"
+									title="Update the selected survey template">
+									<p:graphicImage value="/large_icons/update.png"
+										style="border:0px"></p:graphicImage>
+								</p:commandLink>
+							</p:panelGrid>
+						</f:facet>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="Create New Template" id="newTemplatePanelId"
+				widgetVar="newTemplatePanelWidget" closable="true">
+
+				<!-- BASIC INFO PANEL -->
+				<p:panel header="Basic Information" id="basicInfoPanelId"
+					widgetVar="basicInfoPanelWidget" closable="true">
+					<h:panelGrid border="0" columns="2" cellspacing="5"
+						style="width:100%">
+						<h:outputText value="Name *"></h:outputText>
+						<p:inputText value="#{surveyTemplateBean.newTemplate.name}"
+							maxlength="32"></p:inputText>
+
+						<h:outputText value="Description "></h:outputText>
+						<p:inputTextarea
+							value="#{surveyTemplateBean.newTemplate.description}"
+							autoResize="false" cols="5" maxHeight="5" rows="5"
+							style="width:150px"></p:inputTextarea>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3" cellspacing="5">
+						<p:commandLink process="@this basicInfoPanelId"
+							actionListener="#{surveyTemplateBean.clearTemplateInfo}"
+							title="Clear the provided information"
+							update=":mainForm:messages basicInfoPanelId">
+							<p:graphicImage value="/large_icons/32x32/clear.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+						<p:commandLink process="@this basicInfoPanelId"
+							update=":mainForm:messages"
+							onclick="PF('questionariePanelWidget').show(), PF('basicInfoPanelWidget').close()"
+							title="Go to questionnarie editing page">
+							<p:graphicImage value="/large_icons/32x32/forward.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel header="Template Questionarie" id="questionariePanelId"
+					widgetVar="questionariePanelWidget" closable="true" visible="false">
+					<h:panelGrid border="0" columns="3" cellspacing="5"
+						style="width:100%">
+						<h:outputText value="Question : "></h:outputText>
+						<p:inputText value="#{surveyTemplateBean.currentQuestion.value}"
+							style="width:#{guiSettings.textLength}px"></p:inputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="5" cellspacing="5">
+						<p:commandLink
+							onclick="PF('questionariePanelWidget').close(), PF('basicInfoPanelWidget').show()"
+							title="Go back to template creation page">
+							<p:graphicImage value="/large_icons/back.png" style="border:0px"></p:graphicImage>
+						</p:commandLink>
+						<p:commandLink process="@this questionariePanelId"
+							title="Add a question to the template"
+							actionListener="#{surveyTemplateBean.addQuestionToTemplate}"
+							update="questionariePanelId">
+							<p:graphicImage value="/large_icons/32x32/plus.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+
+					<p:dataGrid columns="1" rows="10" id="questionsDataGridId"
+						value="#{surveyTemplateBean.newTemplate.questions}" var="question"
+						emptyMessage="No questions provided yet for this survey template!">
+						<p:column>
+							<p:panel>
+								<h:panelGrid columns="4">
+									<h:outputText value="Question :"></h:outputText>
+									<p:inputText readonly="true"
+										style="width:#{guiSettings.textLength}px"
+										value="#{question.value}"></p:inputText>
+								</h:panelGrid>
+								<h:panelGrid border="0" columns="3" cellspacing="5">
+									<p:commandLink title="Options" immediate="true"
+										action="#{surveyTemplateBean.manageOptions(question)}"
+										update=":mainForm:messages :mainForm:questionariePanelId :mainForm:optionsPanelId"
+										process="@this" oncomplete="PF('optionsDialogWidget').show()">
+										<p:graphicImage value="/large_icons/options.png"
+											style="border:0px"></p:graphicImage>
+									</p:commandLink>
+									<p:commandLink title="Remove"
+										action="#{surveyTemplateBean.removeQuestion(question)}"
+										update=":mainForm:messages questionsDataGridId"
+										process="@this questionsDataGridId">
+										<p:graphicImage value="/large_icons/delete.png"
+											style="border:0px"></p:graphicImage>
+									</p:commandLink>
+								</h:panelGrid>
+							</p:panel>
+						</p:column>
+					</p:dataGrid>
+
+				</p:panel>
+
+				<h:panelGrid border="0" columns="5" cellspacing="5"
+					style="align:right">
+					<p:commandLink process="@this basicInfoPanelId"
+						oncomplete="PF('questionariePanelWidget').close(), PF('basicInfoPanelWidget').show()"
+						title="Cancel template submission"
+						update=":mainForm:messages basicInfoPanelId questionariePanelId"
+						actionListener="#{surveyTemplateBean.cancelTemplateSub}">
+						<p:graphicImage value="/large_icons/cancel.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+					<p:commandLink process="@this newTemplatePanelId"
+						title="Submit the new template"
+						actionListener="#{surveyTemplateBean.add}"
+						update=":mainForm:messages :mainForm:accordionPanelId newTemplatePanelId">
+						<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+
+				<!--   ***************************************************************************************************   -->
+				<!--   ******************************************* DIALOG SECTION ****************************************   -->
+				<!--   ***************************************************************************************************   -->
+				<p:dialog draggable="true" closable="true" maximizable="false"
+					resizable="false" header="Manage Options" id="optionsDialogId"
+					widgetVar="optionsDialogWidget">
+					<p:panel style="min-width:600px" id="optionsPanelId"
+						toggleable="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel value="Section : "></h:outputLabel>
+							<p:inputText value="#{surveyTemplateBean.currentOption.section}"
+								maxlength="2"></p:inputText>
+
+							<h:outputLabel value="Value : "></h:outputLabel>
+							<p:inputText value="#{surveyTemplateBean.currentOption.value}"></p:inputText>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="Submit" update="messages optionsDataGridId"
+								process="@this optionsPanelId"
+								actionListener="#{surveyTemplateBean.addOptionToQuestion}">
+								<p:graphicImage value="/large_icons/32x32/plus.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+
+						<p:dataGrid columns="1" rows="10" id="optionsDataGridId"
+							value="#{surveyTemplateBean.selectedQuestion.questionOptions}"
+							var="option">
+							<p:column>
+								<p:panel>
+									<h:panelGrid columns="4">
+										<h:outputText value="Section :"></h:outputText>
+										<p:inputText readonly="true" value="#{option.section}"></p:inputText>
+
+										<h:outputText value="Option :"></h:outputText>
+										<p:inputText readonly="true" value="#{option.value}"></p:inputText>
+									</h:panelGrid>
+
+									<h:panelGrid border="0" columns="3" cellspacing="5">
+										<p:commandLink title="Remove"
+											action="#{surveyTemplateBean.removeOptionFromQuestion(option)}"
+											update=":mainForm:messages :mainForm:optionsDataGridId"
+											process="@this">
+											<p:graphicImage value="/large_icons/delete.png"
+												style="border:0px"></p:graphicImage>
+										</p:commandLink>
+									</h:panelGrid>
+								</p:panel>
+							</p:column>
+						</p:dataGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink
+								title="Submit option set for the selected question"
+								update=":mainForm:messages"
+								onclick="PF('optionsDialogWidget').hide()" process="@this">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+
+					</p:panel>
+				</p:dialog>
+			</p:panel>
+		
+			<!-- UPDATE SURVEY TEMPLATE SECTION -->
+			<p:dialog closable="true" draggable="true"
+				resizable="false" widgetVar="updateTemplateDialogWidget"
+				dynamic="true" id="updateTemplateDialogId"
+				header="#{surveyTemplateBean.selected.name}">
+				<p:panel style="min-width:600px" id="updateTemplatePanelId"
+					toggleable="true" closable="false">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputText value="Name *"></h:outputText>
+						<p:inputText value="#{surveyTemplateBean.selected.name}"
+							maxlength="32"></p:inputText>
+
+						<h:outputText value="Description "></h:outputText>
+						<p:inputTextarea
+							value="#{surveyTemplateBean.selected.description}"
+							autoResize="false" cols="5" maxHeight="5" rows="5"
+							style="width:125px"></p:inputTextarea>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Update"
+							update="messages :mainForm:accordionPanelId:templateTableId"
+							process="@this updateTemplatePanelId"
+							oncomplete="PF('updateTemplateDialogWidget').hide()"
+							actionListener="#{surveyTemplateBean.update()}">
+							<p:graphicImage value="/large_icons/update.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel the update operation" immediate="true"
+							update=":mainForm:messages updateTemplateDialogId"
+							process="@this" onclick="PF('updateTemplateDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+			<!-- DELETE SURVEY TEMPLATE SECTION -->
+			<p:dialog id="deleteSurveyDialogId" resizable="false"
+				widgetVar="deleteSurveyDialogWidget" closable="true"
+				maximizable="true" dynamic="true" draggable="true"
+				header="Delete">
+				<p:panel style="min-width:600px"
+					header="#{surveyTemplateBean.selected.name}" closable="true"
+					toggleable="true" id="deleteSurveyPanelId"
+					widgetVar="deleteSurveyPanelWidget" visible="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputText value="Do you want to remove the selected survey template ? "></h:outputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Yes"
+							update=":mainForm:accordionPanelId:templateTableId :mainForm:messages "
+							oncomplete="PF('deleteSurveyDialogWidget').hide()"
+							process="@this" actionListener="#{surveyTemplateBean.delete}">
+							<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel the delete operation!" immediate="true"
+							update="messages"
+							onclick="PF('deleteSurveyDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+			
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>

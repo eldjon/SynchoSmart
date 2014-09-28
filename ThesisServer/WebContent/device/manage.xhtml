@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="Device List">
+					<p:dataTable var="device" id="deviceTableId"
+						value="#{deviceBean.deviceList}"
+						paginator="true" rows="20"
+						selection="#{deviceBean.selected}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect"
+							update=":mainForm:devicePanelId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.deviceId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="IMEI"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.imei}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Brand"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.brand}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Model"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.model}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel
+				header="Device : #{deviceBean.selected.imei}"
+				id="devicePanelId" 
+				widgetVar="devicePanelWidget"
+				closable="true"
+				visible="true">
+				<h:panelGrid border="0" columns="2" style="width:100%"
+					id="devicePanelGridId" >
+					<h:outputLabel value="IMEI : "></h:outputLabel>
+					<p:inputText value="#{deviceBean.selected.imei}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Brand : "></h:outputLabel>
+					<p:inputText value="#{deviceBean.selected.brand}"
+						readonly="true" disabled="true"></p:inputText>
+
+					<h:outputLabel value="Model : "></h:outputLabel>
+					<p:inputText value="#{deviceBean.selected.model}"
+						readonly="true" disabled="true"></p:inputText>
+				</h:panelGrid>
+				
+				<h:panelGrid border="0" columns="11"
+					rendered="#{deviceBean.selected.deviceId != null and deviceBean.selected.deviceId > 0}">
+					<p:commandLink
+						title="Update the selected device"
+						oncomplete="PF('updateDeviceDialogWidget').show()" process="@this"
+						update=":mainForm:updateDevicePanelId :mainForm:messages">
+						<p:graphicImage value="/large_icons/update.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink
+						title="Delete the selected device" process="@this"
+						oncomplete="PF('deleteDeviceDialogWidget').show()"
+						update=":mainForm:messages :mainForm:deleteDevicePanelId">
+						<p:graphicImage value="/large_icons/delete.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+			
+		
+			<!-- UPDATE DEVICE SECTION -->
+			<p:dialog closable="true" draggable="true"
+				resizable="false" widgetVar="updateDeviceDialogWidget"
+				dynamic="true" id="updateDeviceDialogId"
+				header="Device: #{deviceBean.selected.imei}">
+				<p:panel style="min-width:600px" id="updateDevicePanelId"
+					toggleable="true" closable="false">
+					<h:panelGrid border="0" columns="2" style="width:100%"
+						id="updateDevicePanelGridId">
+						<h:outputLabel value="IMEI *: "></h:outputLabel>
+						<p:inputText value="#{deviceBean.selected.imei}"
+							maxlength="50" required="true"></p:inputText>
+
+						<h:outputLabel value="Brand : "></h:outputLabel>
+						<p:inputText value="#{deviceBean.selected.brand}"
+							required="true"></p:inputText>
+
+						<h:outputLabel value="Model : "></h:outputLabel>
+						<p:inputText value="#{deviceBean.selected.model}"></p:inputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Update"
+							update="messages updateDevicePanelId devicePanelId :mainForm:accordionPanelId:deviceTableId"
+							process="updateDevicePanelId"
+							oncomplete="PF('updateDeviceDialogWidget').hide()"
+							actionListener="#{deviceBean.update}">
+							<p:graphicImage value="/large_icons/update.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel" immediate="true"
+							update="updateDevicePanelId messages"
+							process="@this" onclick="PF('updateDeviceDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+			<!-- DELETE DEVICE SECTION -->
+			<p:dialog id="deleteDeviceDialogId" resizable="false"
+				widgetVar="deleteDeviceDialogWidget" closable="true"
+				maximizable="true" dynamic="true" draggable="true"
+				header="Delete: #{deviceBean.selected.imei}">
+				<p:panel style="min-width:600px"
+					header="#{deviceBean.selected.imei}" closable="true"
+					toggleable="true" id="deleteDevicePanelId"
+					widgetVar="deleteDevicePanelWidget" visible="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputText value="Do you want to remove the selected device ? "></h:outputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Yes"
+							update="accordionPanelId devicePanelId messages"
+							oncomplete="PF('deleteDeviceDialogWidget').hide()"
+							process="@this" actionListener="#{deviceBean.delete}">
+							<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+						</p:commandLink>
+
+						<p:commandLink title="Cancel" immediate="true"
+							update="messages"
+							onclick="PF('deleteDeviceDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+			
+		</ui:define>
+		
+	</ui:composition>
+</h:body>
+</html>

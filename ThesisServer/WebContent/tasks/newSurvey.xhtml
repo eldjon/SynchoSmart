@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="Available Templates">
+					<p:dataTable var="template" id="templateTableId"
+						value="#{startSurveyBean.templateList}" paginator="true" rows="20"
+						selection="#{startSurveyBean.selected}" selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" update=":mainForm:templatePanelId :mainForm:questionsPanelId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.surveyTemplateId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Name"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Description"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{template.description}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Creation Date"></h:outputText>
+							</f:facet>
+							<p:calendar readonly="true" value="#{template.creationDate}"></p:calendar>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="Selected Survey Template" id="templatePanelId"
+				widgetVar="templatePanelWidget" closable="true">
+				<p:panel header="Basic Information" id="basicInfoPanelId"
+					widgetVar="basicInfoPanelWidget" closable="true">
+					<h:panelGrid border="0" columns="2" cellspacing="5"
+						style="width:100%">
+						<h:outputText value="Name *"></h:outputText>
+						<p:inputText value="#{startSurveyBean.selected.name}"
+							readonly="true" disabled="true"></p:inputText>
+
+						<h:outputText value="Description *"></h:outputText>
+						<p:inputTextarea readonly="true"
+							value="#{startSurveyBean.selected.description}"
+							autoResize="false" cols="5" maxHeight="5" rows="5"
+							disabled="true"
+							style="width:150px"></p:inputTextarea>
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel id="questionsPanelId">
+					<c:forEach items="#{startSurveyBean.selected.questions}"
+						var="question" begin="0">
+
+						<h:panelGrid border="0" columns="1" cellspacing="5"
+							style="width:100%">
+							<p:inputText readonly="true"
+								style="width:#{guiSettings.textLength}px"
+								value="#{question.value}"></p:inputText>
+						</h:panelGrid>
+						<c:forEach items="#{question.questionOptions}" var="option">
+							<h:panelGrid border="0" columns="1" cellspacing="5"
+								style="width:100%; margin-left:50px">
+								<p:inputText readonly="true"
+									style="width:#{guiSettings.textLength}px"
+									value="#{option.section} #{option.value}"></p:inputText>
+							</h:panelGrid>
+						</c:forEach>
+					</c:forEach>
+				</p:panel>
+
+				<h:panelGrid border="0" columns="3">
+					<p:commandLink title="Create new instance from the selected survey template!"
+						rendered="#{startSurveyBean.selected.surveyTemplateId > 0}"
+						update="messages :mainForm:instancePanelId" process="@this"
+						onclick="PF('newInstanceDialogWidget').show()">
+						<p:graphicImage value="/large_icons/instance.png"
+							style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+
+			<!--   ***************************************************************************************************   -->
+			<!--   ******************************************* DIALOG SECTION ****************************************   -->
+			<!--   ***************************************************************************************************   -->
+			<p:dialog draggable="true" closable="true" maximizable="false"
+				resizable="false" header="Create Instance" id="newInstanceDialogId"
+				widgetVar="newInstanceDialogWidget">
+				<p:panel style="width:700px" id="instancePanelId"
+					toggleable="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputLabel value="Name : "></h:outputLabel>
+						<p:inputText value="#{startSurveyBean.newInstance.name}"
+							maxlength="32"></p:inputText>
+
+						<h:outputLabel value="Estimated Start Time : "></h:outputLabel>
+						<p:calendar
+							value="#{startSurveyBean.newInstance.estimatedStartTime}"
+							showOn="button" pattern="MM/dd/yyyy HH:mm">
+						</p:calendar>
+
+						<h:outputLabel value="Estimated duration (m) : "></h:outputLabel>
+						<p:inputText
+							value="#{startSurveyBean.newInstance.estimatedDuration}"
+							maxlength="3"></p:inputText>
+
+						<h:outputText value="Description "></h:outputText>
+						<p:inputTextarea
+							value="#{startSurveyBean.newInstance.description}"
+							autoResize="false" cols="5" maxHeight="5"
+							rows="5" style="width:150px"></p:inputTextarea>
+					</h:panelGrid>
+
+					<p:dataTable var="device" id="selectedDevicesTableId"
+						value="#{startSurveyBean.deviceList}" paginator="true" rows="20"
+						selection="#{startSurveyBean.selectedDevices}"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+
+						<p:column selectionMode="multiple" style="width:30px" />
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.deviceId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="IMEI"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.imei}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Brand"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.brand}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Model"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{device.model}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Create" update="messages"
+							actionListener="#{startSurveyBean.createInstance}"
+							oncomplete="PF('newInstanceDialogWidget').hide()"
+							process="@this instancePanelId">
+							<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>

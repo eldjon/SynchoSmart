@@ -1,0 +1,96 @@
+<ns1:deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" xmlns:ns1="http://xml.apache.org/axis/wsdd/">
+ <ns1:globalConfiguration>
+  <ns1:parameter name="sendMultiRefs" value="true"/>
+  <ns1:parameter name="disablePrettyXML" value="true"/>
+  <ns1:parameter name="adminPassword" value="admin"/>
+  <ns1:parameter name="attachments.Directory" value="/home/eldi/Desktop/THESIS/setup/glassfish4/glassfish/domains/domain1/eclipseApps/ThesisServerEAR/ThesisServer_war/WEB-INF/attachments"/>
+  <ns1:parameter name="dotNetSoapEncFix" value="true"/>
+  <ns1:parameter name="enableNamespacePrefixOptimization" value="false"/>
+  <ns1:parameter name="sendXMLDeclaration" value="true"/>
+  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <ns1:parameter name="sendXsiTypes" value="true"/>
+  <ns1:requestFlow>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="session"/>
+   </ns1:handler>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="request"/>
+    <ns1:parameter name="extension" value=".jwr"/>
+   </ns1:handler>
+  </ns1:requestFlow>
+ </ns1:globalConfiguration>
+ <ns1:handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <ns1:handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <ns1:handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <ns1:service name="AdminService" provider="java:MSG">
+  <ns1:parameter name="allowedMethods" value="AdminService"/>
+  <ns1:parameter name="enableRemoteAdmin" value="false"/>
+  <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
+ </ns1:service>
+ <ns1:service name="Version" provider="java:RPC">
+  <ns1:parameter name="allowedMethods" value="getVersion"/>
+  <ns1:parameter name="className" value="org.apache.axis.Version"/>
+ </ns1:service>
+ <ns1:service name="SoapWS" provider="java:RPC" style="wrapped" use="literal">
+  <ns2:operation name="notifyFileUploadFailure" qname="ns1:notifyFileUploadFailure" returnQName="ns1:notifyFileUploadFailureReturn" returnType="xsd:boolean" soapAction="" xmlns:ns1="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/axis/wsdd/">
+   <ns2:parameter qname="ns1:imei" type="xsd:string"/>
+   <ns2:parameter qname="ns1:file" type="xsd:string"/>
+  </ns2:operation>
+  <ns1:operation name="getQuestionnaire" qname="ns2:getQuestionnaire" returnQName="ns2:getQuestionnaireReturn" returnType="xsd:string" soapAction="" xmlns:ns2="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns2:imei" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="notifyAppException" qname="ns3:notifyAppException" returnQName="ns3:notifyAppExceptionReturn" returnType="xsd:boolean" soapAction="" xmlns:ns3="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns3:imei" type="xsd:string"/>
+   <ns1:parameter qname="ns3:exception" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="receivedCmd" qname="ns4:receivedCmd" returnQName="ns4:receivedCmdReturn" returnType="xsd:boolean" soapAction="" xmlns:ns4="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns4:imei" type="xsd:string"/>
+   <ns1:parameter qname="ns4:cmd" type="xsd:int"/>
+  </ns1:operation>
+  <ns1:operation name="disconnectDevice" qname="ns5:disconnectDevice" returnQName="ns5:disconnectDeviceReturn" returnType="xsd:boolean" soapAction="" xmlns:ns5="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns5:imei" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="provideSeatNumber" qname="ns6:provideSeatNumber" returnQName="ns6:provideSeatNumberReturn" returnType="xsd:boolean" soapAction="" xmlns:ns6="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns6:imei" type="xsd:string"/>
+   <ns1:parameter qname="ns6:seatNumber" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="submitQuestionnaire" qname="ns7:submitQuestionnaire" returnQName="ns7:submitQuestionnaireReturn" returnType="xsd:boolean" soapAction="" xmlns:ns7="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns7:imei" type="xsd:string"/>
+   <ns1:parameter qname="ns7:surveyInstanceId" type="xsd:int"/>
+   <ns1:parameter qname="ns7:questionnaire" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="getSurveyId" qname="ns8:getSurveyId" returnQName="ns8:getSurveyIdReturn" returnType="xsd:int" soapAction="" xmlns:ns8="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns8:imei" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="getSocket" qname="ns9:getSocket" returnQName="ns9:getSocketReturn" returnType="xsd:int" soapAction="" xmlns:ns9="http://webservices.thesis.metu.edu.tr" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns9:imei" type="xsd:string"/>
+   <ns1:parameter qname="ns9:ipAddress" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="getSocket disconnectDevice getQuestionnaire provideSeatNumber receivedCmd notifyFileUploadFailure getSurveyId notifyAppException submitQuestionnaire"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="SoapWS"/>
+  <ns1:parameter name="className" value="tr.edu.metu.thesis.webservices.SoapWS"/>
+  <ns1:parameter name="wsdlServicePort" value="SoapWS"/>
+  <ns1:parameter name="schemaQualified" value="http://webservices.thesis.metu.edu.tr"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://webservices.thesis.metu.edu.tr"/>
+  <ns1:parameter name="wsdlServiceElement" value="SoapWSService"/>
+ </ns1:service>
+ <ns1:transport name="http">
+  <ns1:requestFlow>
+   <ns1:handler type="URLMapper"/>
+   <ns1:handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </ns1:requestFlow>
+  <ns1:parameter name="qs:list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs:wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+  <ns1:parameter name="qs.list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs.method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs:method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs.wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+ </ns1:transport>
+ <ns1:transport name="local">
+  <ns1:responseFlow>
+   <ns1:handler type="LocalResponder"/>
+  </ns1:responseFlow>
+ </ns1:transport>
+</ns1:deployment>

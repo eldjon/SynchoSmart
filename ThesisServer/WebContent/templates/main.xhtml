@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+	<link type="text/css" rel="stylesheet" href="styles/style.css"
+		charset="UTF-8" />
+</h:head>
+
+<h:body>
+	<f:view locale="en" encoding="UTF-8">
+		<h:form id="mainForm" prependId="false" enctype="multipart/form-data"
+			rendered="true">
+			<p:toolbar
+				style="top:10px; width:1350px; margin-left:auto; margin-right:auto; position:relative">
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Close" process="@this" 
+						actionListener="#{sessionManager.closeSession}" ></p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:menubar
+				style="top:10px; width:1348px; margin-left:auto; margin-right:auto; position:relative">
+				<p:menuitem actionListener="#{pageNavigatorBean.goToHomePage}" 
+							value="Home"
+							process="@this"></p:menuitem>
+				<p:submenu label="Device" rendered="true">
+					<p:menuitem value="Add" 
+								update=":mainForm:addDevicePanelId"
+								process="@this" 
+								onclick="PF('addDeviceDialogWidget').show()"></p:menuitem>
+					<p:menuitem value="Manage" 
+								process="@this" 
+								actionListener="#{pageNavigatorBean.goToDeviceManagePage}"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="Participant" rendered="true">
+					<p:menuitem value="Add"
+							 	process="@this"></p:menuitem>
+					<p:menuitem value="View" 
+								process="@this"></p:menuitem>
+				</p:submenu>
+				
+				<p:submenu label="Tasks" rendered="true">
+					<p:menuitem value="Survey Templates" 
+								process="@this"
+								actionListener="#{pageNavigatorBean.goToSurveyTemplatePage}"></p:menuitem>
+					<p:menuitem value="Create Survey Instance" 
+								process="@this"
+								actionListener="#{pageNavigatorBean.goToStartSurveyPage}"></p:menuitem>
+					<p:menuitem value="Active Survey Instance" 
+								process="@this"
+								actionListener="#{pageNavigatorBean.goToActiveSurveyPage}"></p:menuitem>
+					<p:menuitem value="Survey Instances´ History" 
+								process="@this" actionListener="#{pageNavigatorBean.goToSurveysPage}"></p:menuitem>
+				</p:submenu>
+			</p:menubar>
+
+			<p:layout fullPage="false" id="mainLayout"
+				style="top:10px; bottom:20px; width:1354px; margin:0;
+				height:1000px; margin-left:auto; margin-right:auto; 
+				position:relative">
+				<p:layoutUnit position="west" resizable="true" collapsible="true"
+					maxSize="500" minSize="300" closable="false">
+					<ui:insert name="sideMenu"></ui:insert>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center" resizable="true" collapsible="true">
+					<p:messages showDetail="false" showSummary="true" id="messages"></p:messages>
+					<ui:insert name="showPanel"></ui:insert>
+				</p:layoutUnit>
+				
+			</p:layout>
+		
+		<!--   ***************************************************************************************************   -->
+		<!--   ******************************************* DIALOG SECTION ****************************************   -->
+		<!--   ***************************************************************************************************   -->
+		<p:dialog draggable="true" closable="true" maximizable="false"
+				resizable="false" header="Add New Device"
+				id="addDeviceDialogId" widgetVar="addDeviceDialogWidget">
+				<p:panel style="min-width:600px" id="addDevicePanelId" toggleable="true">
+					<h:panelGrid border="0" columns="2" style="width:100%">
+						<h:outputLabel value="Device Id (imei) : "></h:outputLabel>
+						<p:inputText value="#{deviceBean.newDevice.imei}"
+							readonly="false" maxlength="15"></p:inputText>
+
+						<h:outputLabel value="Brand : "></h:outputLabel>
+						<p:inputText value="#{deviceBean.newDevice.brand}"
+							readonly="false"></p:inputText>
+
+						<h:outputLabel value="Model : "></h:outputLabel>
+						<p:inputText value="#{deviceBean.newDevice.model}"
+							readonly="false"></p:inputText>
+					</h:panelGrid>
+
+					<h:panelGrid border="0" columns="3">
+						<p:commandLink title="Submit" 
+							immediate="false"
+							update="messages addDevicePanelId"
+							onclick="PF('addDeviceDialogWidget').hide()" 
+							process="@this addDevicePanelId"
+							actionListener="#{deviceBean.add}">
+							<p:graphicImage value="/large_icons/ok.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+						<p:commandLink title="Cancel" 
+							immediate="true"
+							update="messages addDevicePanelId"
+							onclick="PF('addDeviceDialogWidget').hide()">
+							<p:graphicImage value="/large_icons/cancel.png"
+								style="border:0px"></p:graphicImage>
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+		</h:form>
+	</f:view>
+</h:body>
+</html>

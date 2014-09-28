@@ -1,0 +1,585 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Emek Boru</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" autoHeight="false"
+				style="padding:0px" id="accordionPanelId">
+				<p:tab title="#{language.Company}">
+					<p:dataTable var="company" id="companyListDataTableId"
+						widgetVar="companyListDataTableWidget"
+						rowKey="#{company.customerId}" dblClickSelect="true"
+						value="#{customerListBean.customers}" paginator="true" rows="20"
+						selection="#{customerBean.currentCustomer}" selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect"
+							update="viewCompanyPanelId orderInfoPanelId orderItemListDataTableId allPanelGridId"
+							process="@this"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Name}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.BusinessId}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.businessId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.BusinessType}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.businessType}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Website}"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{company.website}"></h:outputText>
+						</p:column>
+						<f:facet name="footer">
+							<p:commandButton value="#{language.Load}"
+								process="companyListDataTableId"
+								update="companyListDataTableId viewCompanyPanelId orderInfoPanelId orderItemListDataTableId allPanelGridId"
+								actionListener="#{customerBean.loadCompanyList}">
+							</p:commandButton>
+						</f:facet>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel
+				header="#{language.Company}: #{customerBean.currentCustomer.name}"
+				id="viewCompanyPanelId" widgetVar="viewCompanyPanelWidget"
+				visible="true">
+				<h:panelGrid border="0" columns="2" style="width:100%"
+					id="viewCompanyPanelGridId">
+					<h:outputLabel value="#{language.Name} *: "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.name}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.BusinessId} *: "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.businessId}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.BusinessType} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.businessType}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.Address}:  " />
+					<p:inputTextarea value="#{customerBean.currentCustomer.address}"
+						rows="5" readonly="true" style="width:125px" autoResize="false"
+						cols="10"></p:inputTextarea>
+
+					<h:outputLabel value="#{language.City} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.city}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.Country} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.country.name}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.PostalCode} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.postalCode}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.PhoneNumber} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.phoneNumber}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.FaxNumber} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.faxNumber}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.eMail} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.eMail}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.Website} : "></h:outputLabel>
+					<p:inputText value="#{customerBean.currentCustomer.website}"
+						readonly="true"></p:inputText>
+
+					<h:outputLabel value="#{language.PartnerSince} (mm/dd/yyyy): "></h:outputLabel>
+					<p:calendar mode="popup" showOn="button" autocomplete="false"
+						pattern="#{userCredentialsBean.dateFormat}" disabled="true"
+						value="#{customerBean.currentCustomer.partnersSince}"></p:calendar>
+				</h:panelGrid>
+				<h:panelGrid border="0" columns="11"
+					rendered="#{customerBean.currentCustomer.customerId != null}">
+					<p:commandLink
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].companyP >= 4}"
+						title="#{language.Edit}"
+						oncomplete="updateCompanyDialogWidget.show()" process="@this"
+						update="updateCompanyPanelId updateCompanyMessages">
+						<p:graphicImage value="/large_icons/update.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink title="#{language.Order}"
+						actionListener="#{customerBean.loadOrderItems}" process="@this"
+						update="companyMessages orderItemListDataTableId">
+						<p:graphicImage value="/large_icons/order.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink title="#{language.Coil}"
+						process="@this companyCoilPanelId"
+						oncomplete="companyCoilDialogWidget.show()"
+						update="companyMessages companyCoilPanelId">
+						<p:graphicImage value="/large_icons/coil.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink title="#{language.ManMaterials}"
+						actionListener="#{customerBean.loadCompanyEdw}"
+						process="@this companyEdwDialogId"
+						oncomplete="companyEdwDialogWidget.show()"
+						update="companyMessages companyEdwPanelId">
+						<p:graphicImage value="/large_icons/raw_materials.png"
+							style="border:0px"></p:graphicImage>
+					</p:commandLink>
+
+					<p:commandLink
+						rendered="#{userCredentialsBean.user.userType.generalPrivileges[0].companyP >= 5}"
+						title="#{language.Delete}" immediate="true" process="@this"
+						oncomplete="deleteCompanyConfirmDialogWidget.show()"
+						update="companyMessages deleteCompanyMessages deleteCompanyPanelId">
+						<p:graphicImage value="/large_icons/delete.png" style="border:0px"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+
+			<!-- ORDER NUMBER INFORMATION -->
+			<p:panel style="width:100%" id="orderInfoPanelId">
+				<h:panelGrid border="0" columns="2" style="align:right">
+					<h:outputLabel value="#{language.Ordernumber}:  " />
+					<h:outputText value="#{customerBean.currentCustomer}"
+						style="font-size:16"></h:outputText>
+				</h:panelGrid>
+			</p:panel>
+
+			<!-- ORDER SECTION OF THE COMPANY -->
+			<p:dataTable var="orderItem" widgetVar="orderItemListDataTableWidget"
+				id="orderItemListDataTableId" rowKey="#{orderItem.orderItemId}"
+				emptyMessage="#{language.EmptyMessage}"
+				value="#{customerBean.orderItemList}" paginator="true" rows="20"
+				selection="#{customerBean.selectedOrderItem}" selectionMode="single"
+				paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.Number}"></h:outputText>
+					</f:facet>
+					<h:outputText value="#{orderItem.itemIndex}"></h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.Dimensions}"></h:outputText>
+					</f:facet>
+					<h:outputText value="#{orderItem.etKalinligi}x #{orderItem.disCap}"></h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.Quality}"></h:outputText>
+					</f:facet>
+					<h:outputText value="#{orderItem.kalite}"></h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.Amount}"></h:outputText>
+					</f:facet>
+					<h:outputText value="#{orderItem.miktar}"></h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.StartDate}"></h:outputText>
+					</f:facet>
+					<p:calendar autocomplete="false"
+						pattern="#{userCredentialsBean.dateFormat}" disabled="true"
+						value="#{orderItem.startDate}"></p:calendar>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{language.EndDate}"></h:outputText>
+					</f:facet>
+					<p:calendar autocomplete="false"
+						pattern="#{userCredentialsBean.dateFormat}" disabled="true"
+						value="#{orderItem.endDate}"></p:calendar>
+				</p:column>
+			</p:dataTable>
+
+			<h:panelGrid cellspacing="0" id="allPanelGridId">
+				<!-- COMPANY COIL SECTION -->
+				<p:dialog closable="true" draggable="true" maximizable="true"
+					resizable="false" widgetVar="companyCoilDialogWidget"
+					dynamic="true" id="companyCoilDialogId"
+					header="#{language.CoilBalance}">
+					<p:panel style="min-width:600px" id="companyCoilPanelId"
+						toggleable="true" closable="false">
+						<!-- BOUGHT COILS (FROM THIS COMPANY) -->
+						<p:dataTable var="boughtCoil"
+							widgetVar="boughtCoilListDataTableWidget"
+							id="boughtCoilListDataTableId" rowKey="#{boughtCoil.id.coilId}"
+							value="#{customerBean.boughtCoilList}" paginator="true" rows="20"
+							selectionMode="single" emptyMessage="#{language.EmptyMessage}"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Coil} #{language.id}"></h:outputText>
+								</f:facet>
+								<h:outputText
+									value="#{boughtCoil.id.coilYear}/ #{boughtCoil.id.coilId}-#{boughtCoil.coilIndex}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.BobinNumber}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{boughtCoil.bobinNo}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Dimensions}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{boughtCoil.width}x #{boughtCoil.cap}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.RemainingAmount}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{boughtCoil.remainingAmount}"></h:outputText>
+							</p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.CoilBought}"></h:outputText>
+							</f:facet>
+						</p:dataTable>
+
+						<!-- SOLD COILS (TO THIS COMPANY) -->
+						<p:dataTable var="soldCoil"
+							widgetVar="soldCoilListDataTableWidget"
+							id="soldCoilListDataTableId"
+							rowKey="#{boughtCoil.id.coilYear}/ #{boughtCoil.id.coilId}-#{boughtCoil.coilIndex}"
+							value="#{customerBean.currentCustomer.soldCoils}"
+							paginator="true" rows="20" selectionMode="single"
+							emptyMessage="#{language.EmptyMessage}"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Coil} #{language.id}"></h:outputText>
+								</f:facet>
+								<h:outputText
+									value="#{soldCoil.id.coilYear}/ #{soldCoil.id.coilId}-#{soldCoil.coilIndex}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.BobinNumber}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{soldCoil.bobinNo}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Dimensions}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{soldCoil.width}x #{soldCoil.cap}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.RemainingAmount}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{soldCoil.remainingAmount}"></h:outputText>
+							</p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.CoilSold}"></h:outputText>
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+				</p:dialog>
+
+				<!-- COMPANY MANUFACTURING MATERIALS SECTION -->
+				<p:dialog closable="true" draggable="true" maximizable="true"
+					widgetVar="companyEdwDialogWidget" dynamic="true" resizable="false"
+					id="companyEdwDialogId" header="#{language.MaterialBalance}">
+					<p:panel style="min-width:650px" id="companyEdwPanelId"
+						toggleable="true">
+						<!-- ELECTRODE BOUGHT FROM THIS COMPANY SECTION -->
+						<p:dataTable var="electrode"
+							emptyMessage="#{language.EmptyMessage}"
+							rowKey="#{electrode.electrodeDustWireId}"
+							widgetVar="electrodeListDataTableWidget"
+							id="electrodeListDataTableId"
+							value="#{customerBean.electrodeList}" paginator="true" rows="10"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.PartNumber}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{electrode.partNumber}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Date}"></h:outputText>
+								</f:facet>
+								<p:calendar mode="popup" autocomplete="false" disabled="true"
+									pattern="#{userCredentialsBean.dateFormat}"
+									value="#{electrode.entranceDate}"></p:calendar>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.RemainingAmount}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{electrode.remainingAmount}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Quality}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{electrode.kalite}"></h:outputText>
+							</p:column>
+
+							<f:facet name="header">
+								<h:outputText value="#{language.Electrode}"></h:outputText>
+							</f:facet>
+						</p:dataTable>
+
+						<!-- DUST BOUGHT FROM THIS COMPANY SECTION -->
+						<p:dataTable var="dust" widgetVar="dustListDataTableWidget"
+							id="dustListDataTableId" rowKey="#{dust.electrodeDustWireId}"
+							value="#{customerBean.dustList}" paginator="true" rows="10"
+							selectionMode="single" emptyMessage="#{language.EmptyMessage}"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.PartNumber}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{dust.partNumber}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Date}"></h:outputText>
+								</f:facet>
+								<p:calendar mode="popup" autocomplete="false" disabled="true"
+									pattern="#{userCredentialsBean.dateFormat}"
+									value="#{dust.entranceDate}"></p:calendar>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.RemainingAmount}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{dust.remainingAmount}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Quality}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{dust.kalite}"></h:outputText>
+							</p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Dust}"></h:outputText>
+							</f:facet>
+						</p:dataTable>
+
+						<!-- WIRE BOUGHT FROM THIS COMPANY SECTION -->
+						<p:dataTable var="wire" rowKey="#{wire.electrodeDustWireId}"
+							widgetVar="wireListDataTableWidget" id="wireListDataTableId"
+							value="#{customerBean.wireList}"
+							emptyMessage="#{language.EmptyMessage}" paginator="true"
+							rows="10" selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.PartNumber}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{wire.partNumber}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Type}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{wire.cinsi}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Date}"></h:outputText>
+								</f:facet>
+								<p:calendar mode="popup" autocomplete="false" disabled="true"
+									pattern="#{userCredentialsBean.dateFormat}"
+									value="#{wire.entranceDate}"></p:calendar>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.RemainingAmount}(kg)"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{wire.remainingAmount}"></h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{language.Quality}"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{wire.kalite}"></h:outputText>
+							</p:column>
+							<f:facet name="header">
+								<h:outputText value="#{language.Wire}"></h:outputText>
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+				</p:dialog>
+
+				<!-- UPDATE COMPANY SECTION -->
+				<p:dialog draggable="true" closable="true" maximizable="true"
+					resizable="false" header="#{language.Update}"
+					id="updateCompanyDialogId" widgetVar="updateCompanyDialogWidget">
+					<p:panel style="min-width:600px" id="updateCompanyPanelId"
+						closable="false" header="#{customerBean.currentCustomer.name}"
+						toggleable="true">
+						<h:panelGrid border="0" columns="2" style="width:100%"
+							id="updateCompanyPanelGridId">
+							<h:outputLabel value="#{language.Name} *: "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.name}"
+								maxlength="50" required="true"
+								requiredMessage="#{language.RequiredMessage}"></p:inputText>
+
+							<h:outputLabel value="#{language.BusinessId} *: "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.businessId}"
+								converterMessage="#{language.nbLayersConverterError}"
+								required="true" requiredMessage="#{language.RequiredMessage}"></p:inputText>
+
+							<h:outputLabel value="#{language.BusinessType} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.businessType}"
+								maxlength="20"></p:inputText>
+
+							<h:outputLabel value="#{language.Address}:  " />
+							<p:inputTextarea value="#{customerBean.currentCustomer.address}"
+								style="width:125px" autoResize="false" cols="10" maxHeight="10"></p:inputTextarea>
+
+							<h:outputLabel value="#{language.City} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.city}"
+								maxlength="20"></p:inputText>
+
+							<h:outputLabel value="#{language.Country} : "></h:outputLabel>
+							<p:selectOneMenu layout="lineDirection" style="width: 140px"
+								value="#{customerBean.currentCustomer.country.countryCode}"
+								required="true" requiredMessage="#{language.RequiredMessage}">
+								<c:forEach items="#{countryListViewBean.countryList}"
+									var="country">
+									<f:selectItem itemValue="#{country.countryCode}"
+										itemLabel="#{country.name}"></f:selectItem>
+								</c:forEach>
+							</p:selectOneMenu>
+
+							<h:outputLabel value="#{language.PostalCode} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.postalCode}"
+								maxlength="5"></p:inputText>
+
+							<h:outputLabel value="#{language.PhoneNumber} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.phoneNumber}"
+								maxlength="20"></p:inputText>
+
+							<h:outputLabel value="#{language.FaxNumber} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.faxNumber}"
+								maxlength="20"></p:inputText>
+
+							<h:outputLabel value="#{language.eMail} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.eMail}"
+								maxlength="20"></p:inputText>
+
+							<h:outputLabel value="#{language.Website} : "></h:outputLabel>
+							<p:inputText value="#{customerBean.currentCustomer.website}"
+								maxlength="30"></p:inputText>
+
+							<h:outputLabel value="#{language.PartnerSince} (mm/dd/yyyy): "></h:outputLabel>
+							<p:calendar mode="popup" showOn="button" autocomplete="false"
+								pattern="#{userCredentialsBean.dateFormat}"
+								value="#{customerBean.currentCustomer.partnersSince}"></p:calendar>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="#{language.Update}"
+								update="accordionPanelId updateCompanyMessages updateCompanyPanelId viewCompanyPanelId"
+								process="updateCompanyPanelId"
+								actionListener="#{customerBean.updateCompany}">
+								<p:graphicImage value="/large_icons/update.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+
+							<p:commandLink title="#{language.Cancel}" immediate="true"
+								update="updateCompanyPanelId updateCompanyMessages"
+								process="@this" onclick="updateCompanyDialogWidget.hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+
+						<p:messages id="updateCompanyMessages"></p:messages>
+					</p:panel>
+				</p:dialog>
+
+				<!-- DELETE COMPANY SECTION -->
+				<p:dialog id="deleteCompanyConfirmDialogId" resizable="false"
+					widgetVar="deleteCompanyConfirmDialogWidget" closable="true"
+					maximizable="true" dynamic="true" draggable="true"
+					header="#{language.Delete}">
+					<p:panel style="min-width:600px"
+						header="#{customerBean.currentCustomer.name}" closable="true"
+						toggleable="true" id="deleteCompanyPanelId"
+						widgetVar="deleteEmployeePanelWidget" visible="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputText value="#{language.DeleteConfirmation}"></h:outputText>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="#{language.ok}"
+								update="deleteCompanyMessages accordionPanelId viewCompanyPanelId"
+								process="@this" actionListener="#{customerBean.deleteCompany}">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+
+							<p:commandLink title="#{language.Cancel}" immediate="true"
+								update="deleteCompanyMessages"
+								onclick="deleteCompanyConfirmDialogWidget.hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+					</p:panel>
+					<p:messages id="deleteCompanyMessages"></p:messages>
+				</p:dialog>
+			</h:panelGrid>
+			<p:messages id="companyMessages"></p:messages>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

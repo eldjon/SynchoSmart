@@ -1,0 +1,451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="Active Surveys">
+					<p:dataTable var="survey" id="surveyTableId"
+						value="#{activeSurveyBean.surveyList}" paginator="true" rows="20"
+						selection="#{activeSurveyBean.selectedSurvey}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" 
+						listener="#{activeSurveyBean.updateDeviceStatus}"
+							process="@this :mainForm:participantsTableId "
+							update=":mainForm:surveyPanelId :mainForm:addDeviceToSurveyPanelId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.surveyInstanceId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Name"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Description"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.description}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Status"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.status}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="Active Survey" id="surveyPanelId"
+				widgetVar="surveyPanelWidget" closable="true">
+				<p:panel header="Basic Information" id="basicInfoPanelId"
+					widgetVar="basicInfoPanelWidget" closable="true">
+					<h:panelGrid border="0" columns="4" cellspacing="5"
+						style="width:100%">
+						<h:outputText value="Name: "></h:outputText>
+						<p:inputText value="#{activeSurveyBean.selectedSurvey.name}"
+							readonly="true" disabled="true"></p:inputText>
+
+						<h:outputLabel value="Estimated Start Date : "></h:outputLabel>
+						<p:calendar
+							value="#{activeSurveyBean.selectedSurvey.estimatedStartTime}"
+							pattern="MM/dd/yyyy HH:mm" readonly="true" disabled="true">
+						</p:calendar>
+
+						<h:outputLabel value="Real Start Date : "></h:outputLabel>
+						<p:calendar value="#{activeSurveyBean.selectedSurvey.startTime}"
+							pattern="MM/dd/yyyy HH:mm" readonly="true" disabled="true">
+						</p:calendar>
+
+						<h:outputLabel value="End Date : "></h:outputLabel>
+						<p:calendar value="#{activeSurveyBean.selectedSurvey.endTime}"
+							pattern="MM/dd/yyyy HH:mm" readonly="true" disabled="true">
+						</p:calendar>
+
+						<h:outputText value="Description *"></h:outputText>
+						<p:inputTextarea readonly="true"
+							value="#{activeSurveyBean.selectedSurvey.description}"
+							autoResize="false" cols="5" maxHeight="5" disabled="true"
+							rows="5" style="width:150px"></p:inputTextarea>
+					</h:panelGrid>
+
+					<!-- ############################ UPDATE THE TABLE PERIODICALLY FOR ANY DATA CHANGE ######################## -->
+					<p:poll autoStart="true"
+						process="@this :mainForm:participantsTableId" interval="5"
+						update=":mainForm:participantsTableId :mainForm:accordionPanelId:surveyTableId"
+						id="updateDevicesPollId"></p:poll>
+					<!-- ############################ UPDATE THE TABLE PERIODICALLY FOR ANY DATA CHANGE ######################## -->
+
+					<p:dataTable var="participant" id="participantsTableId"
+						widgetVar="participantTableWidget"
+						value="#{activeSurveyBean.selectedSurvey.participantsDm}"
+						paginator="true" rows="20"
+						selection="#{activeSurveyBean.selectedParticipant}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink}">
+						<p:ajax event="rowSelect"
+							update="participantsTableId :mainForm:messages"
+							process="@this participantsTableId"></p:ajax>
+
+						<f:facet name="header">
+							<h:outputText value="Participants of the current survey"></h:outputText>
+						</f:facet>
+
+						<p:column sortBy="participantId" headerText="ID">
+							<h:outputText value="#{participant.participantId}"></h:outputText>
+						</p:column>
+
+						<p:column sortBy="firstname" headerText="Participant">
+							<h:outputText
+								value="#{participant.firstname} #{participant.lastname}"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Device">
+							<h:outputText
+								value="#{participant.device.imei} (#{participant.device.brand})"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Device Status">
+							<p:graphicImage value="/large_icons/active.png"
+								rendered="#{participant.device.status == 'CONNECTED'}">
+							</p:graphicImage>
+							<p:graphicImage value="/large_icons/deactive.png"
+								rendered="#{participant.device.status == 'DISCONNECTED' or participant.device.status == NULL}">
+							</p:graphicImage>
+						</p:column>
+
+						<p:column headerText="DataStatus">
+							<h:outputText value="#{participant.dataStatus}"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Last CMD">
+							<h:outputText value="#{participant.device.lastReceivedCmd.name}"></h:outputText>
+						</p:column>
+
+						<f:facet name="footer">
+							<p:panelGrid border="0" columns="3">
+								<p:commandLink title="Add" process="@this"
+									actionListener="#{activeSurveyBean.loadFreeDeviceList}"
+									rendered="#{activeSurveyBean.selectedSurvey.surveyInstanceId > 0}"
+									update=":mainForm:messages :mainForm:addDeviceToSurveyPanelId"
+									onclick="PF('addDeviceToSurveyDialogWidget').show()">
+									<p:graphicImage value="/large_icons/add.png" style="border:0px"></p:graphicImage>
+								</p:commandLink>
+								<p:commandLink title="Update"
+									rendered="#{activeSurveyBean.selectedParticipant.participantId > 0}"
+									process="@this participantsTableId"
+									update=":mainForm:messages :mainForm:updateDeviceFromSurveyPanelId"
+									onclick="PF('updateDeviceFromSurveyDialogWidget').show()">
+									<p:graphicImage value="/large_icons/update.png"
+										style="border:0px"></p:graphicImage>
+								</p:commandLink>
+								<p:commandLink title="Remove"
+									rendered="#{activeSurveyBean.selectedParticipant.participantId > 0}"
+									process="@this participantsTableId"
+									update=":mainForm:messages :mainForm:removeDeviceFromSurveyPanelId"
+									onclick="PF('removeDeviceFromSurveyDialogWidget').show()">
+									<p:graphicImage value="/large_icons/delete.png"
+										style="border:0px"></p:graphicImage>
+								</p:commandLink>
+							</p:panelGrid>
+						</f:facet>
+
+					</p:dataTable>
+				</p:panel>
+
+				<!-- ################################### CONTROLS ########################################## -->
+				<h:panelGrid border="0" columns="3"
+					rendered="#{activeSurveyBean.selectedSurvey.status != 'COMPLETED'}"
+					id="controlsPanelGridId" style="width:40px">
+					<p:commandLink title="Connect Socket Handler"
+						update="messages controlsPanelGridId controlsNextPanelGridId"
+						process="@this participantsTableId"
+						actionListener="#{activeSurveyBean.connectSurveyInstance}"
+						style="margin-left:100px">
+						<p:graphicImage value="/large_icons/64x64/connect.png"
+							style="border:0px"
+							rendered="#{activeSurveyBean.selectedSurvey.canConnect}"></p:graphicImage>
+						<p:graphicImage value="/large_icons/64x64/connect_gray.png"
+							style="border:0px"
+							rendered="#{!activeSurveyBean.selectedSurvey.canConnect}"></p:graphicImage>
+					</p:commandLink>
+					<p:commandLink title="Start Survey (Send start cmd to devices)"
+						update="messages controlsPanelGridId controlsNextPanelGridId"
+						process="@this participantsTableId"
+						actionListener="#{activeSurveyBean.startSurveyInstance}"
+						style="margin-left:100px">
+						<p:graphicImage value="/large_icons/64x64/start.png"
+							style="border:0px"
+							rendered="#{activeSurveyBean.selectedSurvey.canStart}"></p:graphicImage>
+						<p:graphicImage value="/large_icons/64x64/start_gray.png"
+							style="border:0px"
+							rendered="#{!activeSurveyBean.selectedSurvey.canStart}"></p:graphicImage>
+					</p:commandLink>
+					<p:commandLink title="End Survey (Send end cmd to devices)"
+						update=":mainForm:closeSurveyPanelId"
+						process="@this participantsTableId"
+						oncomplete="PF('closeSurveyDialogWidget').show()"
+						style="margin-left:100px">
+						<p:graphicImage value="/large_icons/64x64/end.png"
+							style="border:0px"
+							rendered="#{activeSurveyBean.selectedSurvey.canEnd}"></p:graphicImage>
+						<p:graphicImage value="/large_icons/64x64/end_gray.png"
+							style="border:0px"
+							rendered="#{!activeSurveyBean.selectedSurvey.canEnd}"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+
+				<h:panelGrid border="0" columns="2"
+					rendered="#{activeSurveyBean.selectedSurvey.status != 'COMPLETED'}"
+					id="controlsNextPanelGridId" style="margin-left:100px">
+					<p:commandLink title="Pause Survey (Send pause cmd to devices)"
+						update="messages controlsPanelGridId controlsNextPanelGridId"
+						process="@this participantsTableId"
+						actionListener="#{activeSurveyBean.pauseSurveyInstance}"
+						style="margin-left:100px">
+						<p:graphicImage value="/large_icons/64x64/pause.png"
+							style="border:0px"
+							rendered="#{activeSurveyBean.selectedSurvey.canPause}"></p:graphicImage>
+						<p:graphicImage value="/large_icons/64x64/pause_gray.png"
+							style="border:0px"
+							rendered="#{!activeSurveyBean.selectedSurvey.canPause}"></p:graphicImage>
+					</p:commandLink>
+					<p:commandLink title="Resume Survey (Send resume cmd to devices)"
+						update="messages controlsPanelGridId controlsNextPanelGridId"
+						process="@this participantsTableId"
+						actionListener="#{activeSurveyBean.resumeSurveyInstance}"
+						style="margin-left:100px">
+						<p:graphicImage value="/large_icons/64x64/resume.png"
+							style="border:0px"
+							rendered="#{activeSurveyBean.selectedSurvey.canResume}"></p:graphicImage>
+						<p:graphicImage value="/large_icons/64x64/resume_gray.png"
+							style="border:0px"
+							rendered="#{!activeSurveyBean.selectedSurvey.canResume}"></p:graphicImage>
+					</p:commandLink>
+				</h:panelGrid>
+
+				<!-- ################################ ADD A PARTICIPANT/DEVICE TO SELECTED SURVEY ################################## -->
+				<p:dialog draggable="true" closable="true" maximizable="false"
+					resizable="false"
+					header="Add new participant/device to the selected survey"
+					id="addDeviceToSurveyDialogId"
+					widgetVar="addDeviceToSurveyDialogWidget">
+					<p:panel style="width:600px" id="addDeviceToSurveyPanelId"
+						toggleable="true">
+
+						<h:outputLabel
+							value="Select a device from the given list (double-click) or enter a new one below:"></h:outputLabel>
+						<p:dataTable var="device" id="freeDevicesTableId"
+							widgetVar="freeDevicesTableWidget"
+							value="#{activeSurveyBean.freeDeviceList}" paginator="true"
+							rows="20" rowKey="#{device.deviceId}" dblClickSelect="true"
+							selection="#{activeSurveyBean.selectedDevice}"
+							selectionMode="single"
+							paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink}">
+							<p:ajax event="rowDblselect"
+								update=":mainForm:messages :mainForm:addDeviceToSurveyPanelId :mainForm:participantsTableId"
+								oncomplete="PF('addDeviceToSurveyDialogWidget').hide()"
+								process="@this :mainForm:addDeviceToSurveyPanelId"
+								listener="#{activeSurveyBean.addSelectedDevice}"></p:ajax>
+
+							<p:column headerText="Imei">
+								<h:outputText value="#{device.imei}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Brand">
+								<h:outputText value="#{device.brand}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Model">
+								<h:outputText value="#{device.model}"></h:outputText>
+							</p:column>
+						</p:dataTable>
+
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel value="Participant´s Firstname : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.addedParticipant.firstname}"
+								readonly="false" maxlength="32"></p:inputText>
+
+							<h:outputLabel value="Participant´s Lastname : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.addedParticipant.lastname}"
+								readonly="false" maxlength="32"></p:inputText>
+
+							<h:outputLabel value="Device Id (imei) : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.addedParticipant.device.imei}"
+								readonly="false" maxlength="16"></p:inputText>
+
+							<h:outputLabel value="Brand : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.addedParticipant.device.brand}"
+								readonly="false"></p:inputText>
+
+							<h:outputLabel value="Model : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.addedParticipant.device.model}"
+								readonly="false"></p:inputText>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="Submit"
+								update="messages participantsTableId addDeviceToSurveyPanelId"
+								onclick="PF('addDeviceToSurveyDialogWidget').hide()"
+								process="@this addDeviceToSurveyPanelId"
+								actionListener="#{activeSurveyBean.addParticipant}">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+							<p:commandLink title="Cancel" immediate="true"
+								update=":mainForm:messages"
+								onclick="PF('addDeviceToSurveyDialogWidget').hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+					</p:panel>
+				</p:dialog>
+
+				<!-- ################################ UPDATE A PARTICIPANT OF THE SELECTED SURVEY ################################## -->
+				<p:dialog draggable="true" closable="true" maximizable="false"
+					resizable="false" header="Add New Device"
+					id="updateDeviceFromSurveyDialogId"
+					widgetVar="updateDeviceFromSurveyDialogWidget">
+					<p:panel style="width:600px" id="updateDeviceFromSurveyPanelId"
+						toggleable="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel value="Device Id (imei) : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.selectedParticipant.device.imei}"
+								readonly="false" maxlength="15"></p:inputText>
+
+							<h:outputLabel value="Brand : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.selectedParticipant.device.brand}"
+								readonly="false"></p:inputText>
+
+							<h:outputLabel value="Model : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.selectedParticipant.device.model}"
+								readonly="false"></p:inputText>
+
+							<h:outputLabel value="Participant´s Firstname (optional) : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.selectedParticipant.firstname}"
+								readonly="false" maxlength="15"></p:inputText>
+
+							<h:outputLabel value="Participant´s Lastname (optional) : "></h:outputLabel>
+							<p:inputText
+								value="#{activeSurveyBean.selectedParticipant.lastname}"
+								readonly="false" maxlength="15"></p:inputText>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="Submit"
+								update=":mainForm:messages :mainForm:participantsTableId"
+								onclick="PF('updateDeviceFromSurveyDialogWidget').hide()"
+								process="@this updateDeviceFromSurveyPanelId participantsTableId"
+								actionListener="#{activeSurveyBean.updateParticipant}">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+							<p:commandLink title="Cancel" immediate="true"
+								update=":mainForm:messages"
+								onclick="PF('updateDeviceFromSurveyDialogWidget').hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+					</p:panel>
+				</p:dialog>
+
+				<!-- ################################ DELETE A PARTICIPANT FROM THE SELECTED SURVEY ################################## -->
+				<p:dialog draggable="true" closable="true" maximizable="false"
+					resizable="false" header="Remove Selected Device"
+					id="removeDeviceFromSurveyDialogId"
+					widgetVar="removeDeviceFromSurveyDialogWidget">
+					<p:panel style="min-width:600px" id="removeDeviceFromSurveyPanelId"
+						toggleable="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel
+								value="Do you want to remove the selected device with IMEI = 
+												 #{activeSurveyBean.selectedParticipant.device.imei} 
+												 from the current survey?"></h:outputLabel>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="Confirm"
+								update=":mainForm:messages :mainForm:participantsTableId"
+								onclick="PF('removeDeviceFromSurveyDialogWidget').hide()"
+								process="@this removeDeviceFromSurveyPanelId"
+								actionListener="#{activeSurveyBean.removeParticipant}">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+							<p:commandLink title="Cancel" immediate="true"
+								update=":mainForm:messages"
+								onclick="PF('removeDeviceFromSurveyDialogWidget').hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+					</p:panel>
+				</p:dialog>
+
+				<!-- ######################################## END THE SURVEY INSTANCE ###################################### -->
+				<p:dialog draggable="true" closable="true" maximizable="false"
+					resizable="false" header="Close the Survey Instance"
+					id="closeSurveyDialogId" widgetVar="closeSurveyDialogWidget">
+					<p:panel style="min-width:600px" id="closeSurveyPanelId"
+						toggleable="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel
+								value="Do you want to close the survey  
+												 #{activeSurveyBean.selectedSurvey.name}? 
+												 Once closed, connected devices will send collected data and disconnect.
+												 This operation cannot be undone!!"></h:outputLabel>
+						</h:panelGrid>
+
+						<h:panelGrid border="0" columns="3">
+							<p:commandLink title="Close the selected survey"
+								update=":mainForm:messages controlsPanelGridId controlsNextPanelGridId :mainForm:surveyPanelId :mainForm:accordionPanelId:surveyTableId"
+								process="@this" oncomplete="PF('closeSurveyDialogWidget').hide()"
+								actionListener="#{activeSurveyBean.endSurveyInstance}">
+								<p:graphicImage value="/large_icons/ok.png" style="border:0px"></p:graphicImage>
+							</p:commandLink>
+							<p:commandLink title="Cancel" immediate="true"
+								update=":mainForm:messages"
+								oncomplete="PF('closeSurveyDialogWidget').hide()">
+								<p:graphicImage value="/large_icons/cancel.png"
+									style="border:0px"></p:graphicImage>
+							</p:commandLink>
+						</h:panelGrid>
+					</p:panel>
+				</p:dialog>
+
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

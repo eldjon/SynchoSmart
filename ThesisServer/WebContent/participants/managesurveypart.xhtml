@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true" id="accordionPanelId">
+				<p:tab title="All Surveys">
+					<p:dataTable var="survey" id="surveyTableId"
+						value="#{surveysBean.surveyList}"
+						paginator="true" rows="20"
+						selection="#{surveysBean.selectedSurvey}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} ">
+						<p:ajax event="rowSelect" 
+							update=":mainForm:surveyPanelId"></p:ajax>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ID"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.surveyInstanceId}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Name"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.name}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Description"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.description}"></h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Status"></h:outputText>
+							</f:facet>
+							<h:outputText value="#{survey.status}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="Active Survey"
+				id="surveyPanelId" 
+				widgetVar="surveyPanelWidget"
+				closable="true">
+				
+				<p:panel header="Basic Information" id="basicInfoPanelId"
+					widgetVar="basicInfoPanelWidget" closable="true">
+					<h:panelGrid border="0" columns="4" cellspacing="5"
+						style="width:100%">
+						<h:outputText value="Name: "></h:outputText>
+						<p:inputText value="#{surveysBean.selectedSurvey.name}"
+							readonly="true"></p:inputText>
+
+						<h:outputLabel value="Estimated Start Date : "></h:outputLabel>
+					    <p:calendar value="#{surveysBean.selectedSurvey.estimatedStartTime}" 
+							pattern="MM/dd/yyyy HH:mm" readonly="true"> 
+					    </p:calendar> 
+							    
+						<h:outputLabel value="Real Start Date : "></h:outputLabel>
+					    <p:calendar value="#{surveysBean.selectedSurvey.startTime}" 
+							pattern="MM/dd/yyyy HH:mm" readonly="true">
+					    </p:calendar> 
+							    
+						<h:outputLabel value="End Date : "></h:outputLabel>
+					    <p:calendar value="#{surveysBean.selectedSurvey.endTime}" 
+							pattern="MM/dd/yyyy HH:mm" readonly="true">
+					    </p:calendar> 
+							    
+						<h:outputText value="Description *"></h:outputText>
+						<p:inputTextarea
+							readonly="true"
+							value="#{surveysBean.selectedSurvey.description}"
+							autoResize="false" cols="5" maxHeight="5" 
+							rows="5" style="width:125px"></p:inputTextarea>
+					</h:panelGrid>
+					
+					<p:dataTable var="participant" id="participantsTableId" 
+						widgetVar="participantTableWidget"
+						value="#{surveysBean.selectedSurvey.participants}"
+						paginator="true" rows="20"
+						rowKey="#{participant.participantId}"
+						selection="#{surveysBean.selectedParticipant}"
+						selectionMode="single"
+						paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink}">
+						
+						<f:facet name="header">
+							<h:outputText value="Participants of the current survey"></h:outputText>
+						</f:facet>
+						
+						<p:column sortBy="participantId" headerText="ID">
+							<h:outputText value="#{participant.participantId}"></h:outputText>
+						</p:column>
+
+						<p:column sortBy="firstname" headerText="Participant">
+							<h:outputText value="#{participant.firstname} #{participant.lastname}"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Device">
+							<h:outputText value="#{participant.device.imei} (#{participant.device.brand})"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Device Status">
+							<p:graphicImage value="/large_icons/active.png"
+							 	rendered="#{participant.device.status == 'CONNECTED'}">
+							</p:graphicImage> 
+							<p:graphicImage value="/large_icons/deactive.png"
+								rendered="#{participant.device.status == 'DISCONNECTED' or participant.device.status == NULL}">
+							</p:graphicImage> 
+						</p:column>
+
+						<p:column headerText="DataStatus">
+							<h:outputText value="#{participant.dataStatus}"></h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+					
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

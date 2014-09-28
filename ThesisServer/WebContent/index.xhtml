@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Automatic Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css" />
+</h:head>
+<h:body>
+	<ui:composition template="/templates/main.xhtml">
+		<ui:define name="sideMenu">
+			<p:accordionPanel multiple="true" collapsible="true"
+				autoHeight="true">
+				<p:tab title="Tab">
+					<p:panel header="Information" toggleable="false" visible="true">
+						<h:panelGrid border="0" columns="2" style="width:100%">
+							<h:outputLabel value="Username : "></h:outputLabel>
+							<p:inputText value="Input text" readonly="true"></p:inputText>
+							<h:outputLabel value="Type: "></h:outputLabel>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+			</p:accordionPanel>
+		</ui:define>
+
+		<ui:define name="showPanel">
+			<p:panel header="Show Panel" closable="true" toggleable="true"
+				id="editEmployeePanelId" widgetVar="editEmployeePanelWidget"
+				visible="true">
+				<p:dataGrid columns="2" rows="5" id="devicesDataGridId"
+					value="#{deviceBean.deviceList}" var="device" 
+					paginator="true" 
+					emptyMessage="There are no registered devices!">
+					<p:column>
+						<p:panel header="#{device.imei}">
+							<h:panelGrid columns="2">
+								<h:outputText value="Imei :"></h:outputText>
+								<p:inputText readonly="true" disabled="true"
+									value="#{device.imei}"></p:inputText>
+								<h:outputText value="Brand :"></h:outputText>
+								<p:inputText readonly="true" disabled="true"
+									value="#{device.brand}"></p:inputText>
+								<h:outputText value="Model :"></h:outputText>
+								<p:inputText readonly="true" disabled="true"
+									value="#{device.model}"></p:inputText>
+							</h:panelGrid>
+						</p:panel>
+					</p:column>
+				</p:dataGrid>
+			</p:panel>
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>

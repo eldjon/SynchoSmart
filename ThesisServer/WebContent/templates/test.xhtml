@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Automatic Audience Analysis</title>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/theme.css"
+		charset="UTF-8" />
+	<link type="text/css" rel="stylesheet" href="styles/style.css"
+		charset="UTF-8" />
+</h:head>
+
+<h:body>
+	<h:form id="mainForm" prependId="false" enctype="multipart/form-data"
+		rendered="true">
+		
+		<h:outputText value="#{testBean.someText}" id="outputId" />
+		<p:commandButton actionListener="#{testBean.testMethod}"
+			update="testBtn" 
+			oncomplete="PF('addDeviceDialogWidget').show() "></p:commandButton>
+
+		<p:commandButton rendered="#{testBean.showSth}" id="testBtn"
+			widgetVar="testBtnW"> slkdjflskjdf</p:commandButton>
+
+
+		<p:poll interval="5" autoStart="true" 
+		oncomplete="PF('addDeviceDialogWidget').show()"
+		process="@this mainForm"
+		update="outputId">
+		</p:poll>
+
+		<p:dialog draggable="true" closable="true" maximizable="false"
+			resizable="false" header="Add New Device" id="addDeviceDialogId"
+			widgetVar="addDeviceDialogWidget">
+			<p:panel style="min-width:600px" id="addDevicePanelId"
+				toggleable="true">
+				<h:panelGrid border="0" columns="2" style="width:100%">
+					<h:outputLabel value="Device Id (imei) : "></h:outputLabel>
+				</h:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+	<!--  
+		<p:socket channel="/thesisEndpoint" >
+			<p:ajax event="message" oncomplete="PF('testBtnW').update()" />
+		</p:socket>
+		-->
+		
+</h:body>
+</html>

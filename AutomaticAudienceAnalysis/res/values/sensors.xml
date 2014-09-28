@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sensor_list">
+        <item >edu.mit.media.funf.probe.builtin.GyroscopeSensorProbe</item>
+        <item >edu.mit.media.funf.probe.builtin.AccelerometerSensorProbe</item>
+        <item >edu.mit.media.funf.probe.builtin.LinearAccelerationSensorProbe</item>
+        <item >edu.mit.media.funf.probe.builtin.OrientationSensorProbe</item>
+        <item >edu.mit.media.funf.probe.builtin.MagneticFieldSensorProbe</item>
+     <!--  
+        <item >tr.edu.metu.ii.aaa.probes.SoundLevelProbe</item>
+      -->        
+    </string-array>
+</resources>

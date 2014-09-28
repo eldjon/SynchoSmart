@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://webservices.thesis.metu.edu.tr" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://webservices.thesis.metu.edu.tr" xmlns:intf="http://webservices.thesis.metu.edu.tr" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://webservices.thesis.metu.edu.tr" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="notifyFileUploadFailure">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="file" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="notifyFileUploadFailureResponse">
+    <complexType>
+     <sequence>
+      <element name="notifyFileUploadFailureReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getQuestionnaire">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getQuestionnaireResponse">
+    <complexType>
+     <sequence>
+      <element name="getQuestionnaireReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="notifyAppException">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="exception" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="notifyAppExceptionResponse">
+    <complexType>
+     <sequence>
+      <element name="notifyAppExceptionReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="receivedCmd">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="cmd" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="receivedCmdResponse">
+    <complexType>
+     <sequence>
+      <element name="receivedCmdReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="disconnectDevice">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="disconnectDeviceResponse">
+    <complexType>
+     <sequence>
+      <element name="disconnectDeviceReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="provideSeatNumber">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="seatNumber" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="provideSeatNumberResponse">
+    <complexType>
+     <sequence>
+      <element name="provideSeatNumberReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitQuestionnaire">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="surveyInstanceId" type="xsd:int"/>
+      <element name="questionnaire" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitQuestionnaireResponse">
+    <complexType>
+     <sequence>
+      <element name="submitQuestionnaireReturn" type="xsd:boolean"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSurveyId">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSurveyIdResponse">
+    <complexType>
+     <sequence>
+      <element name="getSurveyIdReturn" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSocket">
+    <complexType>
+     <sequence>
+      <element name="imei" type="xsd:string"/>
+      <element name="ipAddress" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSocketResponse">
+    <complexType>
+     <sequence>
+      <element name="getSocketReturn" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="disconnectDeviceRequest">
+
+      <wsdl:part element="impl:disconnectDevice" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSocketResponse">
+
+      <wsdl:part element="impl:getSocketResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="notifyFileUploadFailureRequest">
+
+      <wsdl:part element="impl:notifyFileUploadFailure" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitQuestionnaireRequest">
+
+      <wsdl:part element="impl:submitQuestionnaire" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="provideSeatNumberRequest">
+
+      <wsdl:part element="impl:provideSeatNumber" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSurveyIdRequest">
+
+      <wsdl:part element="impl:getSurveyId" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="provideSeatNumberResponse">
+
+      <wsdl:part element="impl:provideSeatNumberResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="notifyAppExceptionRequest">
+
+      <wsdl:part element="impl:notifyAppException" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="notifyAppExceptionResponse">
+
+      <wsdl:part element="impl:notifyAppExceptionResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSurveyIdResponse">
+
+      <wsdl:part element="impl:getSurveyIdResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="receivedCmdResponse">
+
+      <wsdl:part element="impl:receivedCmdResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getQuestionnaireRequest">
+
+      <wsdl:part element="impl:getQuestionnaire" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="notifyFileUploadFailureResponse">
+
+      <wsdl:part element="impl:notifyFileUploadFailureResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitQuestionnaireResponse">
+
+      <wsdl:part element="impl:submitQuestionnaireResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getQuestionnaireResponse">
+
+      <wsdl:part element="impl:getQuestionnaireResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSocketRequest">
+
+      <wsdl:part element="impl:getSocket" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="disconnectDeviceResponse">
+
+      <wsdl:part element="impl:disconnectDeviceResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="receivedCmdRequest">
+
+      <wsdl:part element="impl:receivedCmd" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SoapWS">
+
+      <wsdl:operation name="notifyFileUploadFailure">
+
+         <wsdl:input message="impl:notifyFileUploadFailureRequest" name="notifyFileUploadFailureRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:notifyFileUploadFailureResponse" name="notifyFileUploadFailureResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getQuestionnaire">
+
+         <wsdl:input message="impl:getQuestionnaireRequest" name="getQuestionnaireRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getQuestionnaireResponse" name="getQuestionnaireResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="notifyAppException">
+
+         <wsdl:input message="impl:notifyAppExceptionRequest" name="notifyAppExceptionRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:notifyAppExceptionResponse" name="notifyAppExceptionResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="receivedCmd">
+
+         <wsdl:input message="impl:receivedCmdRequest" name="receivedCmdRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:receivedCmdResponse" name="receivedCmdResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="disconnectDevice">
+
+         <wsdl:input message="impl:disconnectDeviceRequest" name="disconnectDeviceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:disconnectDeviceResponse" name="disconnectDeviceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="provideSeatNumber">
+
+         <wsdl:input message="impl:provideSeatNumberRequest" name="provideSeatNumberRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:provideSeatNumberResponse" name="provideSeatNumberResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitQuestionnaire">
+
+         <wsdl:input message="impl:submitQuestionnaireRequest" name="submitQuestionnaireRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:submitQuestionnaireResponse" name="submitQuestionnaireResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSurveyId">
+
+         <wsdl:input message="impl:getSurveyIdRequest" name="getSurveyIdRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSurveyIdResponse" name="getSurveyIdResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSocket">
+
+         <wsdl:input message="impl:getSocketRequest" name="getSocketRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSocketResponse" name="getSocketResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="SoapWSSoapBinding" type="impl:SoapWS">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="notifyFileUploadFailure">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="notifyFileUploadFailureRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="notifyFileUploadFailureResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getQuestionnaire">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getQuestionnaireRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getQuestionnaireResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="notifyAppException">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="notifyAppExceptionRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="notifyAppExceptionResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="receivedCmd">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="receivedCmdRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="receivedCmdResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="disconnectDevice">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="disconnectDeviceRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="disconnectDeviceResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="provideSeatNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="provideSeatNumberRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="provideSeatNumberResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitQuestionnaire">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitQuestionnaireRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitQuestionnaireResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSurveyId">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSurveyIdRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSurveyIdResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSocket">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSocketRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSocketResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SoapWSService">
+
+      <wsdl:port binding="impl:SoapWSSoapBinding" name="SoapWS">
+
+         <wsdlsoap:address location="http://localhost:8080/ThesisServer/services/SoapWS"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

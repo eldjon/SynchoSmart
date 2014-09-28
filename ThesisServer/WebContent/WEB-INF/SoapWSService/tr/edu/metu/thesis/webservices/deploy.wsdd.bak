@@ -1,0 +1,60 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from SoapWSService WSDL service -->
+
+  <service name="SoapWS" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://webservices.thesis.metu.edu.tr"/>
+      <parameter name="wsdlServiceElement" value="SoapWSService"/>
+      <parameter name="schemaQualified" value="http://webservices.thesis.metu.edu.tr"/>
+      <parameter name="wsdlServicePort" value="SoapWS"/>
+      <parameter name="className" value="tr.edu.metu.thesis.webservices.SoapWSSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="SoapWS"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="notifyFileUploadFailure" qname="operNS:notifyFileUploadFailure" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:notifyFileUploadFailureReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:file" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getQuestionnaire" qname="operNS:getQuestionnaire" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:getQuestionnaireReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="notifyAppException" qname="operNS:notifyAppException" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:notifyAppExceptionReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:exception" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="receivedCmd" qname="operNS:receivedCmd" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:receivedCmdReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:cmd" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="disconnectDevice" qname="operNS:disconnectDevice" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:disconnectDeviceReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="provideSeatNumber" qname="operNS:provideSeatNumber" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:provideSeatNumberReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:seatNumber" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="submitQuestionnaire" qname="operNS:submitQuestionnaire" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:submitQuestionnaireReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:surveyInstanceId" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:questionnaire" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getSurveyId" qname="operNS:getSurveyId" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:getSurveyIdReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getSocket" qname="operNS:getSocket" xmlns:operNS="http://webservices.thesis.metu.edu.tr" returnQName="retNS:getSocketReturn" xmlns:retNS="http://webservices.thesis.metu.edu.tr" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:imei" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:ipAddress" xmlns:pns="http://webservices.thesis.metu.edu.tr" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="getSocket disconnectDevice getQuestionnaire provideSeatNumber receivedCmd notifyFileUploadFailure getSurveyId notifyAppException submitQuestionnaire"/>
+
+  </service>
+</deployment>
